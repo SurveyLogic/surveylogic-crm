@@ -4,9 +4,9 @@ import {
   ProductDetailRoute,
   ProductGeneralTab,
   ProductListRoute,
-  ProductSettingsTab,
-  ProductsRoute,
-} from "./routes/ProductsRoute.tsx";
+  OrderSettingsTab,
+  OrdersRoute,
+} from "./routes/OrdersRoute.tsx";
 import {
   CategoriesRoute,
   CategoryDetailRoute,
@@ -18,12 +18,12 @@ import {
   homeRoute,
   categoriesRoute,
   categoryDetailRoute,
-  productDetailRoute,
-  productsRoute,
+  orderDetailRoute,
+  ordersRoute,
   suppliersRoute,
   dashboardRoute,
-  productDetailSettingTabsRoute,
-  productsCreateRoute,
+  orderDetailSettingTabsRoute,
+  ordersCreateRoute,
 } from "./constants/routes.constants.ts";
 import { DashboardRoute } from "src/examples/main/routes/DashboardRoute.tsx";
 
@@ -51,8 +51,8 @@ export const routeIds = {
 const productRoutes = [
   {
     id: routeIds.product.layout,
-    path: productsRoute,
-    element: <ProductsRoute />,
+    path: ordersRoute,
+    element: <OrdersRoute />,
     children: [
       {
         id: routeIds.product.list,
@@ -61,12 +61,12 @@ const productRoutes = [
       },
       {
         id: routeIds.product.create,
-        path: productsCreateRoute,
+        path: ordersCreateRoute,
         element: <ProductCreateRoute />,
       },
       {
         id: routeIds.product.detail,
-        path: productDetailRoute,
+        path: orderDetailRoute,
         element: <ProductDetailRoute />,
         children: [
           {
@@ -75,8 +75,8 @@ const productRoutes = [
           },
           {
             id: routeIds.product.tabs.settings,
-            path: productDetailSettingTabsRoute,
-            element: <ProductSettingsTab />,
+            path: orderDetailSettingTabsRoute,
+            element: <OrderSettingsTab />,
           },
         ],
       },

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import {
   categoriesRoute,
   dashboardRoute,
-  productsRoute,
+  ordersRoute,
   suppliersRoute,
 } from "src/examples/main/constants/routes.constants.ts";
 import { css } from "@emotion/react";
@@ -13,8 +13,8 @@ export const Menu = () => {
       <Link css={linkStyles} to={dashboardRoute}>
         Dashboard
       </Link>
-      <Link css={linkStyles} to={productsRoute}>
-        Products
+      <Link css={linkStyles} to={ordersRoute}>
+        Orders
       </Link>
       <Link css={linkStyles} to={categoriesRoute}>
         Categories
