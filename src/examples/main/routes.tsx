@@ -6,6 +6,22 @@ import {
   OrderListRoute,
   OrderSettingsTab,
   OrdersRoute,
+
+//custom imports
+OrderCompanyTab,
+OrderItemsTab,
+OrderTotalsTab,
+OrderPaymentsTab,
+OrderProductionTab,
+OrderPartsTab,
+OrderNotesTab,
+OrderActivitiesTab,
+OrderArtworkTab,
+OrderDocumentTab,
+OrderShippingTab,
+OrderUserDefinedFieldsTab,
+OrderAdvancedTab,
+
 } from "./routes/OrdersRoute.tsx";
 import { SuppliersRoute } from "./routes/SuppliersRoute.tsx";
 import { AppLayout } from "./components/AppLayout/AppLayout.tsx";
@@ -70,6 +86,72 @@ const orderRoutes = [
             id: routeIds.order.tabs.settings,
             path: orderDetailSettingTabsRoute,
             element: <OrderSettingsTab />,
+          },
+          //custom routes
+          {
+            id: routeIds.order.tabs.company,
+            path: orderDetailCompanyTabsRoute,
+            element: <OrderCompanyTab />,
+          },
+          {
+            id: routeIds.order.tabs.items,
+            path: orderDetailItemsTabsRoute,
+            element: <OrderItemsTab />,
+          },
+          {
+            id: routeIds.order.tabs.totals,
+            path: orderDetailTotalsTabsRoute,
+            element: <OrderTotalsTab />,
+          },
+          {
+            id: routeIds.order.tabs.payments,
+            path: orderDetailPaymentsTabsRoute,
+            element: <OrderPaymentsTab />,
+          },
+          {
+            id: routeIds.order.tabs.production,
+            path: orderDetailProductionTabsRoute,
+            element: <OrderProductionTab />,
+          },
+          {
+            id: routeIds.order.tabs.parts,
+            path: orderDetailPartsTabsRoute,
+            element: <OrderPartsTab />,
+          },
+          {
+            id: routeIds.order.tabs.notes,
+            path: orderDetailNotesTabsRoute,
+            element: <OrderNotesTab />,
+          },
+          {
+            id: routeIds.order.tabs.activities,
+            path: orderDetailActivitiesTabsRoute,
+            element: <OrderActivitiesTab />,
+          },
+          {
+            id: routeIds.order.tabs.artwork,
+            path: orderDetailArtworkTabsRoute,
+            element: <OrderArtworkTab />,
+          },
+          {
+            id: routeIds.order.tabs.documents,
+            path: orderDetailDocumentsTabsRoute,
+            element: <OrderDocumentsTab />,
+          },
+          {
+            id: routeIds.order.tabs.shipping,
+            path: orderDetailShippingTabsRoute,
+            element: <OrderShippingTab />,
+          },
+          {
+            id: routeIds.order.tabs.userdefinedfields,
+            path: orderDetailUserDefinedFieldsTabsRoute,
+            element: <OrderUserDefinedFieldsTab />,
+          },
+          {
+            id: routeIds.order.tabs.advanced,
+            path: orderDetailAdvancedTabsRoute,
+            element: <OrderAdvancedTab />,
           },
         ],
       },
