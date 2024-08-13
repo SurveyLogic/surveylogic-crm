@@ -45,21 +45,21 @@ export function OrdersRoute() {
     id: ordersListRoute,
     title: "All orders",
     meta: {
-      routeId: routeIds.product.list,
+      routeId: routeIds.order.list,
       path: ordersListRoute,
     },
   }));
 
   const [detailTabDefinition] = useState(() => ({
     title: ({ params }: { params: DetailParams }) => {
-      const product = orders.find(
-        (product) => String(product.id) === params.id,
+      const order = orders.find(
+        (order) => String(order.id) === params.id,
       );
-      return product!.title;
+      return order!.title;
     },
     id: ({ params }: { params: DetailParams }) =>
       orderDetailRoute.replace(":id", params.id),
-    routeId: routeIds.product.detail,
+    routeId: routeIds.order.detail,
     insertMethod: InsertMethod.Prepend,
   }));
 
@@ -73,7 +73,7 @@ export function OrdersRoute() {
   const [createTabDefinition] = useState(() => ({
     title: () => "New order",
     id: ordersCreateRoute,
-    routeId: routeIds.product.create,
+    routeId: routeIds.order.create,
     insertMethod: InsertMethod.Append,
   }));
 
@@ -128,7 +128,7 @@ export function OrdersRoute() {
   );
 }
 
-export function ProductListRoute() {
+export function OrderListRoute() {
   const navigate = useNavigate();
   return (
     <div>
@@ -138,7 +138,7 @@ export function ProductListRoute() {
             navigate(ordersCreateRoute);
           }}
         >
-          create new product
+          create new order
         </Button>
       </div>
       <div
@@ -175,7 +175,7 @@ const layoutStyles = css`
   height: 100%;
 `;
 
-export function ProductDetailRoute() {
+export function OrderDetailRoute() {
   const params = useParams() as DetailParams;
 
   const generalTab = useMemo<TabModel<TabbedNavigationMeta>>(
@@ -185,7 +185,7 @@ export function ProductDetailRoute() {
       content: <Outlet />,
       isClosable: false,
       meta: {
-        routeId: routeIds.product.detail,
+        routeId: routeIds.order.detail,
         path: orderDetailRoute.replace(":id", params.id),
       },
     }),
@@ -198,7 +198,7 @@ export function ProductDetailRoute() {
       content: <Outlet />,
       isClosable: false,
       meta: {
-        routeId: routeIds.product.tabs.settings,
+        routeId: routeIds.order.tabs.settings,
         path: orderDetailSettingTabsRoute.replace(":id", params.id),
       },
     }),
@@ -261,7 +261,7 @@ const detailFormLayout = css({
   flexDirection: "column",
 });
 
-export function ProductGeneralTab() {
+export function OrderGeneralTab() {
   return <div>General</div>;
 }
 
@@ -269,6 +269,6 @@ export function OrderSettingsTab() {
   return <div>Settings</div>;
 }
 
-export function ProductCreateRoute() {
-  return <div>Create product</div>;
+export function OrderCreateRoute() {
+  return <div>Create order</div>;
 }

@@ -62,7 +62,7 @@ export function AppLayout() {
     {
       title: () => "Orders",
       id: ordersRoute,
-      routeId: routeIds.product.layout,
+      routeId: routeIds.order.layout,
       insertMethod: InsertMethod.Prepend,
     },
     {
