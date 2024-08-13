@@ -14,6 +14,23 @@ import {
   homeRoute,
   orderDetailRoute,
   orderDetailSettingTabsRoute,
+
+//custom routes
+  orderDetailCompanyTabsRoute,
+  orderDetailItemsTabsRoute,
+  orderDetailTotalsTabsRoute,
+  orderDetailPaymentsTabsRoute,
+  orderDetailProductionTabsRoute,
+  orderDetailPartsTabsRoute,
+  orderDetailNotesTabsRoute,
+  orderDetailActivitiesTabsRoute,
+  orderDetailArtworkTabsRoute,
+  orderDetailDocumentsTabsRoute,
+  orderDetailShippingTabsRoute,
+  orderDetailUserDefinedFieldsTabsRoute,
+  orderDetailAdvancedTabsRoute,
+
+
   ordersCreateRoute,
   ordersListRoute,
 } from "../constants/routes.constants.ts";
@@ -205,11 +222,198 @@ export function OrderDetailRoute() {
     [params.id],
   );
 
-  const [tabs, setTabs] = useState([generalTab, settingsTab]);
+  //add custom tabs
+  const companyTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailCompanyTabsRoute.replace(":id", params.id),
+      title: "Company",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.company,
+        path: orderDetailCompanyTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const itemsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailItemsTabsRoute.replace(":id", params.id),
+      title: "Items",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.items,
+        path: orderDetailItemsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const totalsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailTotalsTabsRoute.replace(":id", params.id),
+      title: "Totals",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.totals,
+        path: orderDetailTotalsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const paymentsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailPaymentsTabsRoute.replace(":id", params.id),
+      title: "Payments",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.payments,
+        path: orderDetailPaymentsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const productionTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailProductionTabsRoute.replace(":id", params.id),
+      title: "Production",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.production,
+        path: orderDetailProductionTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const partsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailPartsTabsRoute.replace(":id", params.id),
+      title: "Parts",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.parts,
+        path: orderDetailPartsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const notesTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailNotesTabsRoute.replace(":id", params.id),
+      title: "Notes",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.notes,
+        path: orderDetailNotesTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const activitiesTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailActivitiesTabsRoute.replace(":id", params.id),
+      title: "Activities",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.notes,
+        path: orderDetailActivitiesTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const artworkTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailArtworkTabsRoute.replace(":id", params.id),
+      title: "Artwork",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.artwork,
+        path: orderDetailArtworkTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const documentsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailDocumentsTabsRoute.replace(":id", params.id),
+      title: "Documents",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.documents,
+        path: orderDetailDocumentsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const shippingTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailShippingTabsRoute.replace(":id", params.id),
+      title: "Shipping",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.shipping,
+        path: orderDetailShippingTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const userdefinedfieldsTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailUserDefinedFieldsTabsRoute.replace(":id", params.id),
+      title: "User Defined Fields",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.userdefinedfields,
+        path: orderDetailUserDefinedFieldsTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const advancedTab = useMemo<TabModel<TabbedNavigationMeta>>(
+    () => ({
+      id: orderDetailAdvancedTabsRoute.replace(":id", params.id),
+      title: "Advanced",
+      content: <Outlet />,
+      isClosable: false,
+      meta: {
+        routeId: routeIds.order.tabs.advanced,
+        path: orderDetailAdvancedTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+
+
+  const [tabs, setTabs] = useState([
+    generalTab, 
+    settingsTab, 
+    companyTab, 
+    itemsTab, 
+    totalsTab, 
+    paymentsTab, 
+    productionTab, 
+    partsTab, 
+    notesTab, 
+    activitiesTab, 
+    artworkTab, 
+    documentsTab, 
+    shippingTab, 
+    userdefinedfieldsTab, 
+    advancedTab]);
 
   useEffect(() => {
-    setTabs([generalTab, settingsTab]);
-  }, [generalTab, settingsTab]);
+    setTabs([generalTab, settingsTab, companyTab, itemsTab, totalsTab, paymentsTab, productionTab, partsTab, notesTab, activitiesTab, artworkTab, documentsTab, shippingTab, userdefinedfieldsTab, advancedTab]);
+  }, [generalTab, settingsTab, companyTab, itemsTab, totalsTab, paymentsTab, productionTab, partsTab, notesTab, activitiesTab, artworkTab, documentsTab, shippingTab, userdefinedfieldsTab, advancedTab]);
 
   const config = useMemo(
     () => [
@@ -225,8 +429,87 @@ export function OrderDetailRoute() {
         routeId: settingsTab.meta.routeId,
         insertMethod: InsertMethod.Prepend,
       },
+      //add custom tabs
+      {
+        title: () => companyTab.title,
+        id: companyTab.id,
+        routeId: companyTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => itemsTab.title,
+        id: itemsTab.id,
+        routeId: itemsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => totalsTab.title,
+        id: totalsTab.id,
+        routeId: totalsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => paymentsTab.title,
+        id: paymentsTab.id,
+        routeId: paymentsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => productionTab.title,
+        id: productionTab.id,
+        routeId: productionTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => partsTab.title,
+        id: partsTab.id,
+        routeId: partsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => notesTab.title,
+        id: notesTab.id,
+        routeId: notesTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => activitiesTab.title,
+        id: activitiesTab.id,
+        routeId: activitiesTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => artworkTab.title,
+        id: artworkTab.id,
+        routeId: artworkTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => documentsTab.title,
+        id: documentsTab.id,
+        routeId: documentsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => shippingTab.title,
+        id: shippingTab.id,
+        routeId: shippingTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => userdefinedfieldsTab.title,
+        id: userdefinedfieldsTab.id,
+        routeId: userdefinedfieldsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => advancedTab.title,
+        id: advancedTab.id,
+        routeId: advancedTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
     ],
-    [settingsTab, generalTab],
+    [settingsTab, generalTab, companyTab, itemsTab, totalsTab, paymentsTab, productionTab, partsTab, notesTab, activitiesTab, artworkTab, documentsTab, shippingTab, userdefinedfieldsTab, advancedTab],
   );
 
   const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
@@ -291,7 +574,7 @@ export function OrderPartsTab() {
 export function OrderNotesTab() {
   return <div>Notes</div>;
 }
-export function OrderActivitesTab() {
+export function OrderActivitiesTab() {
   return <div>Activities</div>;
 }
 export function OrderArtworkTab() {
