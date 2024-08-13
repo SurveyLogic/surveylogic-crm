@@ -2,7 +2,7 @@
   "name": "routable-tabs",
   "private": true,
   "description": "Routable tabs",
-  "homepage": "https://layerok.github.io/react-router-tabs/",
+  "homepage": "http://localhost:5173/sl/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

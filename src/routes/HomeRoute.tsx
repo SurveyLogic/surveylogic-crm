@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { homeRoute as basicHomeRoute } from "src/examples/basic/constants/routes.constants.ts";
-import { homeRoute as clipOneHomeRoute } from "src/examples/clip-one/constants/routes.constants.ts";
+import { homeRoute as mainHomeRoute } from "src/examples/main/constants/routes.constants.ts";
 import { css } from "@emotion/react";
 
 export function HomeRoute() {
@@ -13,7 +13,7 @@ export function HomeRoute() {
             <Link to={basicHomeRoute}>Basic</Link>
           </li>
           <li>
-            <Link to={clipOneHomeRoute}>Clip one</Link>
+            <Link to={mainHomeRoute}>Main</Link>
           </li>
         </ul>
       </div>

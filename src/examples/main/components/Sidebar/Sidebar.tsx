@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import * as routes from "src/constants/routes.constants.ts";
 import { memo } from "react";
 import { css } from "@emotion/react";
-import { Menu } from "src/examples/clip-one/components/Menu/Menu.tsx";
+import { Menu } from "src/examples/main/components/Menu/Menu.tsx";
 
 export function RawSidebar() {
   return (

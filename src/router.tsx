@@ -3,7 +3,7 @@ import { HomeRoute } from "src/routes/HomeRoute.tsx";
 
 import { basicExampleRoutes } from "src/examples/basic/routes.tsx";
 import { homeRoute } from "src/constants/routes.constants.ts";
-import { clipOneRoutes } from "src/examples/clip-one/routes.tsx";
+import { mainRoutes } from "src/examples/main/routes.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -11,5 +11,5 @@ export const router = createBrowserRouter([
     element: <HomeRoute />,
   },
   ...basicExampleRoutes,
-  ...clipOneRoutes,
+  ...mainRoutes,
 ]);
