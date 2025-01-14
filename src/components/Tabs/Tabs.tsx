@@ -1,6 +1,7 @@
 import "./Tabs.css";
 import { useCallback, useEffect, useState } from "react";
 import { RouterState } from "@remix-run/router";
+import { uid } from "uid";
 
 import { noop } from "src/utils/noop.ts";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
@@ -13,8 +14,6 @@ import {
   useActiveTab,
 } from "src/tabbed-navigation.tsx";
 import { Tab } from "src/components/Tabs/Tab.tsx";
-
-let tabId = 0;
 
 type TabsProps = {
   storeKey: string;
@@ -69,7 +68,7 @@ export function Tabs(props: TabsProps) {
         return [
           {
             storeKey: storeKey,
-            id: `${tabId++}`,
+            id: uid(),
             path: path,
             routeId: match.route.id,
           },
