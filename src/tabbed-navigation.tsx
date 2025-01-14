@@ -53,9 +53,9 @@ export const useTabTitle = (tab: TabModel) => {
     .slice()
     .reverse()
     .find((match) => getTabHandle(match, tab.storeKey));
+
   if (match) {
     const handle = getTabHandle(match!, tab.storeKey);
-
     return handle?.title?.(match);
   }
 };

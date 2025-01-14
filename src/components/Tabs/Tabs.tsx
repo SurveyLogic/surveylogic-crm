@@ -1,5 +1,5 @@
 import "./Tabs.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RouterState } from "@remix-run/router";
 
 import { noop } from "src/utils/noop.ts";
@@ -16,72 +16,82 @@ import { Tab } from "src/components/Tabs/Tab.tsx";
 
 let tabId = 0;
 
-export function Tabs(props: {
+type TabsProps = {
   storeKey: string;
   onActiveTabChange?: (tab: TabModel | undefined) => void;
-}) {
+};
+
+export function Tabs(props: TabsProps) {
   const { storeKey, onActiveTabChange = noop } = props;
+
   const [tabs, setTabs] = useState<TabModel[]>([]);
   const { router } = useDataRouterContext();
   const activeTab = useActiveTab(tabs);
 
-  useEffect(() => {
-    const handleLocationChange = (state: RouterState) => {
+  const updateTabs = useCallback(
+    (state: RouterState) => {
       const { matches, location, navigation } = state;
-
-      const match = matches.find((match) => getTabHandle(match, storeKey));
 
       if (navigation.location) {
         return;
       }
 
-      if (match) {
-        setTabs((prevTabs) => {
-          const tab = prevTabs.find(
-            (tab) =>
-              tab.routeId === match.route.id &&
-              getTabLocation(tab).pathname.startsWith(match.pathname),
-          );
+      const match = matches.find((match) => getTabHandle(match, storeKey));
 
-          const path =
-            last(matches).pathname +
-            (location.search ? `${location.search}` : "");
-
-          if (!tab) {
-            return [
-              {
-                storeKey: storeKey,
-                id: `${tabId++}`,
-                path: path,
-                routeId: match.route.id,
-              },
-              ...prevTabs,
-            ];
-          } else {
-            const index = prevTabs.indexOf(tab);
-            return replaceAt(prevTabs, index, {
-              ...tab,
-              path: path,
-            });
-          }
-          return prevTabs;
-        });
+      if (!match) {
+        return;
       }
-    };
+
+      const updateTabsState = (prevTabs: TabModel[]) => {
+        const doesTabBelongToMatch = (tab: TabModel) => {
+          return (
+            tab.routeId === match.route.id &&
+            getTabLocation(tab).pathname.startsWith(match.pathname)
+          );
+        };
+
+        const tab = prevTabs.find(doesTabBelongToMatch);
+
+        const path =
+          last(matches).pathname +
+          (location.search ? `${location.search}` : "");
+
+        if (tab) {
+          // update the tab path
+          const index = prevTabs.indexOf(tab);
+          return replaceAt(prevTabs, index, {
+            ...tab,
+            path: path,
+          });
+        }
+
+        // prepend a new tab
+        return [
+          {
+            storeKey: storeKey,
+            id: `${tabId++}`,
+            path: path,
+            routeId: match.route.id,
+          },
+          ...prevTabs,
+        ];
+      };
+
+      setTabs(updateTabsState);
+    },
+    [storeKey],
+  );
+
+  useEffect(() => {
     // fire immediately
-    handleLocationChange(router.state);
-    return router.subscribe(handleLocationChange);
-  }, [router, storeKey]);
+    updateTabs(router.state);
+    return router.subscribe(updateTabs);
+  }, [router, storeKey, updateTabs]);
 
   const closeTab = (tab: TabModel) => {
-    const closest = closestItem(tabs, tab);
-    if (!closest) {
-      onActiveTabChange(undefined);
-    } else {
-      onActiveTabChange(closest);
-    }
-
-    setTabs((prevTabs) => removeItem(prevTabs, tab));
+    onActiveTabChange(closestItem(tabs, tab));
+    const removeTab = (tabs: TabModel[]) => removeItem(tabs, tab);
+    setTabs(removeTab);
   };
 
   if (tabs.length < 1) {
