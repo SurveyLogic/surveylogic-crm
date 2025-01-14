@@ -42,14 +42,14 @@ export function Tabs(props: TabsProps) {
       }
 
       const updateTabsState = (prevTabs: TabModel[]) => {
-        const doesTabBelongToMatch = (tab: TabModel) => {
+        const doesTabBelongToRouteMatch = (tab: TabModel) => {
           return (
             tab.routeId === match.route.id &&
             getTabLocation(tab).pathname.startsWith(match.pathname)
           );
         };
 
-        const tab = prevTabs.find(doesTabBelongToMatch);
+        const tab = prevTabs.find(doesTabBelongToRouteMatch);
 
         const path =
           last(matches).pathname +
