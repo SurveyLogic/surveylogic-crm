@@ -2,6 +2,7 @@ import { createBrowserRouter, Params } from "react-router-dom";
 import {AppLayout} from "src/components/AppLayout/AppLayout.tsx";
 import {ProductsRoute} from "src/routes/ProductsRoute.tsx";
 import {CategoriesRoute} from "src/routes/CategoriesRoute.tsx";
+import {SuppliersRoute} from "src/routes/SuppliersRoute.tsx";
 import {HomeRoute} from "src/routes/HomeRoute.tsx";
 import {TabStoreKey} from "src/constants/tabs.constants.ts";
 import * as routes from "src/constants/routes.constants.ts";
@@ -51,7 +52,7 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: routes.suppliersRoute,
-				element: <CategoriesRoute/>,
+				element: <SuppliersRoute/>,
 				handle: ({
 					tabs: [
 						{
