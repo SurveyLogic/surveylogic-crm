@@ -1,3 +1,3 @@
 export function ProductsRoute() {
-	return <div>products</div>
+  return <div>products</div>;
 }

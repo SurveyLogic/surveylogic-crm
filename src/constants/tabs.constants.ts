@@ -1,3 +1,3 @@
-export enum TabStoreKey  {
-	Main = 'main'
+export enum TabStoreKey {
+  Main = "main",
 }

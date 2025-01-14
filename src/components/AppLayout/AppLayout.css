@@ -1,20 +1,19 @@
 .layout {
-    display: grid;
-    grid-template-columns: minmax(150px, 25%) 1fr;
-    min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+  min-height: 100vh;
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
-    height: 40px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    justify-content: end;
+  height: 40px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  justify-content: end;
 }
-

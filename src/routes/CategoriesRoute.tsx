@@ -1,3 +1,3 @@
 export function CategoriesRoute() {
-	return <div>categories</div>
+  return <div>categories</div>;
 }
