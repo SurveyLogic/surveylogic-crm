@@ -25,7 +25,7 @@
 
 .tab .close-trigger {
   opacity: 0;
-  padding-left: 16px;
+  margin-left: 16px;
 }
 
 .tab:hover .close-trigger {

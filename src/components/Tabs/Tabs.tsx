@@ -1,5 +1,5 @@
 import "./Tabs.css";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RouterState } from "@remix-run/router";
 
 import { noop } from "src/utils/noop.ts";
@@ -11,8 +11,8 @@ import {
   getTabLocation,
   TabModel,
   useActiveTab,
-  useTabTitle,
 } from "src/tabbed-navigation.tsx";
+import { Tab } from "src/components/Tabs/Tab.tsx";
 
 let tabId = 0;
 
@@ -75,7 +75,6 @@ export function Tabs(props: {
 
   const closeTab = (tab: TabModel) => {
     const closest = closestItem(tabs, tab);
-    console.log("closest", closest);
     if (!closest) {
       onActiveTabChange(undefined);
     } else {
@@ -100,35 +99,6 @@ export function Tabs(props: {
           key={tab.id}
         />
       ))}
-    </div>
-  );
-}
-
-function Tab(props: {
-  tab: TabModel;
-  isActive: boolean;
-  onClose?: (tab: TabModel) => void;
-  onActiveTabChange?: (tab: TabModel | undefined) => void;
-}) {
-  const { tab, isActive, onClose = noop, onActiveTabChange = noop } = props;
-  const title = useTabTitle(tab);
-  const className = ["tab", isActive && "active"].filter(Boolean).join(" ");
-
-  const handleClose: MouseEventHandler = (e) => {
-    e.stopPropagation();
-    onClose(tab);
-  };
-
-  return (
-    <div
-      onClick={() => onActiveTabChange(tab)}
-      key={tab.id}
-      className={className}
-    >
-      {title}
-      <span className={"close-trigger"} onClick={handleClose}>
-        x
-      </span>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import * as routes from "src/constants/routes.constants.ts";
 
 export function AppLayout() {
   const navigate = useNavigate();
+
   const changeTab = (tab: TabModel | undefined) => {
     navigate(tab ? getTabLocation(tab) : routes.homeRoute);
   };
