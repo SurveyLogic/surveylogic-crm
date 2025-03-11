@@ -1,96 +1,106 @@
 import "./Tabs.css";
-import { useCallback, useEffect, useState } from "react";
-import { RouterState } from "@remix-run/router";
-import { uid } from "uid";
-
+import React, {useImperativeHandle, useReducer} from "react";
 import { noop } from "src/utils/noop.ts";
-import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
-import { last, removeItem, replaceAt } from "src/utils/array-utils.ts";
+import {  removeItem } from "src/utils/array-utils.ts";
 import {
   closestItem,
-  getTabHandle,
-  getTabLocation,
   TabModel,
-  useActiveTab,
 } from "src/tabbed-navigation.tsx";
 import { Tab } from "src/components/Tabs/Tab.tsx";
+
+export type TabsApi = {
+  setTabs: (tabs: TabModel[] | {(prevTabs: TabModel[]) :TabModel[]}) => void;
+  setActiveTabId: (id: string)  => void;
+}
 
 type TabsProps = {
   storeKey: string;
   onActiveTabChange?: (tab: TabModel | undefined) => void;
+  apiRef?: React.Ref<TabsApi | undefined>;
 };
 
+type State = {
+  readonly tabs: TabModel[];
+  readonly activeTabId: string | undefined;
+}
+
+type Action =
+  | {
+  type: 'close-tab'
+  tab: TabModel
+} | {
+  type: 'set-tabs'
+  tabs: TabModel[]
+}| {
+  type: 'set-active-tab-id'
+  id: string;
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'close-tab': {
+      const {tab} = action;
+      const {tabs, activeTabId: prevActiveId, ...rest} = state;
+
+      const activeTabId = prevActiveId === tab.id ? closestItem(tabs, tab)?.id: prevActiveId;
+      return {
+        tabs: removeItem(tabs, tab),
+        activeTabId: activeTabId === tab.id ? closestItem(tabs, tab)?.id: activeTabId,
+        ...rest
+      }
+    }
+    case 'set-tabs': {
+      const {tabs} = action;
+
+      return {
+        ...state,
+        tabs,
+      }
+    }
+    case 'set-active-tab-id': {
+      const {id} = action;
+
+      return {
+        ...state,
+        activeTabId: id,
+      }
+    }
+  }
+}
+
 export function Tabs(props: TabsProps) {
-  const { storeKey, onActiveTabChange = noop } = props;
+  const { onActiveTabChange = noop, apiRef } = props;
 
-  const [tabs, setTabs] = useState<TabModel[]>([]);
-  const { router } = useDataRouterContext();
-  const activeTab = useActiveTab(tabs);
+  const [state, dispatch] = useReducer(reducer, {
+    tabs: [],
+    activeTabId: undefined,
+  });
 
-  const updateTabs = useCallback(
-    (state: RouterState) => {
-      const { matches, location, navigation } = state;
-
-      if (navigation.location) {
-        return;
-      }
-
-      const match = matches.find((match) => getTabHandle(match, storeKey));
-
-      if (!match) {
-        return;
-      }
-
-      const updateTabsState = (prevTabs: TabModel[]) => {
-        const doesTabBelongToRouteMatch = (tab: TabModel) => {
-          return (
-            tab.routeId === match.route.id &&
-            getTabLocation(tab).pathname.startsWith(match.pathname)
-          );
-        };
-
-        const tab = prevTabs.find(doesTabBelongToRouteMatch);
-
-        const path =
-          last(matches).pathname +
-          (location.search ? `${location.search}` : "");
-
-        if (tab) {
-          // update the tab path
-          const index = prevTabs.indexOf(tab);
-          return replaceAt(prevTabs, index, {
-            ...tab,
-            path: path,
-          });
-        }
-
-        // prepend a new tab
-        return [
-          {
-            storeKey: storeKey,
-            id: uid(),
-            path: path,
-            routeId: match.route.id,
-          },
-          ...prevTabs,
-        ];
-      };
-
-      setTabs(updateTabsState);
+  useImperativeHandle(apiRef, () => ({
+    setTabs: (tabsArg) => {
+      const tabs = typeof tabsArg === 'function' ? tabsArg(state.tabs): tabsArg;
+      dispatch({
+        type: 'set-tabs',
+        tabs
+      })
     },
-    [storeKey],
-  );
+    setActiveTabId: (id: string) => {
+      dispatch({
+        type: 'set-active-tab-id',
+        id
+      })
+    }
+  }))
 
-  useEffect(() => {
-    // fire immediately
-    updateTabs(router.state);
-    return router.subscribe(updateTabs);
-  }, [router, storeKey, updateTabs]);
+  const {tabs, activeTabId} = state;
+
+  const activeTab = tabs.find(tab => tab.id === activeTabId);
 
   const closeTab = (tab: TabModel) => {
-    onActiveTabChange(closestItem(tabs, tab));
-    const removeTab = (tabs: TabModel[]) => removeItem(tabs, tab);
-    setTabs(removeTab);
+    dispatch({
+      type: 'close-tab',
+      tab
+    })
   };
 
   if (tabs.length < 1) {
@@ -111,3 +121,4 @@ export function Tabs(props: TabsProps) {
     </div>
   );
 }
+

@@ -4,6 +4,7 @@ import { Handle, TabHandle } from "./router.tsx";
 
 export type TabModel = {
   id: string;
+  title: string;
   path: string;
   routeId: string;
   storeKey: string;

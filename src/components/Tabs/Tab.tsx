@@ -1,4 +1,4 @@
-import { TabModel, useTabTitle } from "src/tabbed-navigation.tsx";
+import { TabModel } from "src/tabbed-navigation.tsx";
 import { noop } from "src/utils/noop.ts";
 import { MouseEventHandler } from "react";
 
@@ -9,7 +9,7 @@ export function Tab(props: {
   onActiveTabChange?: (tab: TabModel | undefined) => void;
 }) {
   const { tab, isActive, onClose = noop, onActiveTabChange = noop } = props;
-  const title = useTabTitle(tab);
+
   const className = ["tab", isActive && "active"].filter(Boolean).join(" ");
 
   const handleClose: MouseEventHandler = (e) => {
@@ -23,10 +23,11 @@ export function Tab(props: {
       key={tab.id}
       className={className}
     >
-      {title}
+      {tab.title}
       <span className={"close-trigger"} onClick={handleClose}>
         x
       </span>
     </div>
   );
 }
+
