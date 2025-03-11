@@ -1,4 +1,4 @@
-export const homeRoute = "/";
-export const productsRoute = "/products";
-export const categoriesRoute = "/categories";
-export const suppliersRoute = "/suppliers";
+export const homeRoute = "/react-router-tabs/";
+export const productsRoute = "/react-router-tabs/products";
+export const categoriesRoute = "/react-router-tabs/categories";
+export const suppliersRoute = "/react-router-tabs/suppliers";
