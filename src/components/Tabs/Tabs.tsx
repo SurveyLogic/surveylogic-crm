@@ -40,7 +40,7 @@ type Action =
     }
   | {
       type: "set-active-tab-id";
-      id: string;
+      id: string | undefined;
       onActiveTabChange?: (tab: TabModel | undefined) => void;
     };
 
@@ -100,7 +100,7 @@ export function Tabs(props: TabsProps) {
     activeTabId: undefined,
   });
 
-  useImperativeHandle<TabsApi>(apiRef, () => ({
+  useImperativeHandle(apiRef, () => ({
     setTabs: (tabsArg) => {
       const tabs =
         typeof tabsArg === "function" ? tabsArg(state.tabs) : tabsArg;

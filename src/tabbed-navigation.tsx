@@ -4,6 +4,7 @@ import {
   matchRoutes,
   UIMatch,
   useMatches,
+  useNavigate,
 } from "react-router-dom";
 import { Handle, TabHandle } from "./router.tsx";
 import { TabStoreKey } from "src/constants/tabs.constants.ts";
@@ -75,15 +76,23 @@ export const useTabTitle = (tab: TabModel) => {
 };
 
 export const useActiveTabId = (key: TabStoreKey) => {
-  const matches = useMatches();
+  const matches = useMatches() as UIMatch<any, Handle>[];
   const storeMatches = matches.filter(getTabHandleUI(key));
 
   return storeMatches[storeMatches.length - 1]?.pathname;
 };
 
-export const useTabbedNavigation = (storeKey: TabStoreKey) => {
+export const useTabbedNavigation = (
+  storeKey: TabStoreKey,
+  fallbackPath: string,
+) => {
   const [tabs, setTabs] = useState<TabModel[]>([]);
   const { router } = useDataRouterContext();
+  const navigate = useNavigate();
+
+  const changeTab = (tab: TabModel | undefined) => {
+    navigate(tab ? pathToLocation(tab.path) : fallbackPath);
+  };
   const updateTabs = useCallback(
     (state: RouterState) => {
       const { matches, location, navigation } = state;
@@ -154,5 +163,6 @@ export const useTabbedNavigation = (storeKey: TabStoreKey) => {
     activeTabId,
     tabs,
     setTabs,
+    changeTab,
   };
 };
