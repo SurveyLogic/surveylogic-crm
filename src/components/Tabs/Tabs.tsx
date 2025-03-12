@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { noop } from "src/utils/noop.ts";
 import { removeItem } from "src/utils/array-utils.ts";
-import { closestItem, TabModel } from "src/tabbed-navigation.tsx";
+import { closestItem, TabModel } from "src/lib/tabs";
 import { Tab } from "src/components/Tabs/Tab.tsx";
 
 export type TabsApi = {
@@ -20,15 +20,18 @@ export type TabsApi = {
 type TabsProps = {
   hasControlledActiveTabId?: boolean;
   activeTabId?: string;
-  tabs?: TabModel[];
+  startPinnedTabs?: string[];
+  tabs?: TabModel<any>[];
   onActiveTabIdChange?: (id: string | undefined) => void;
-  onTabsChange?: (tabs: TabModel[]) => void;
+  onStartPinnedTabsChange?: (ids: string[]) => void;
+  onTabsChange?: (tabs: TabModel<any>[]) => void;
   apiRef?: React.Ref<TabsApi | undefined>;
 };
 
 type State = {
   tabs: TabModel[];
   activeTabId: string | undefined;
+  startPinnedTabs: string[];
 };
 
 const useForceRerender = () => {
@@ -43,9 +46,11 @@ export function Tabs(props: TabsProps) {
     onActiveTabIdChange = noop,
     apiRef,
     activeTabId: activeTabIdProp,
+    startPinnedTabs,
     hasControlledActiveTabId,
     tabs: tabsProp,
     onTabsChange,
+    onStartPinnedTabsChange,
   } = props;
 
   const forceRerender = useForceRerender();
@@ -53,6 +58,7 @@ export function Tabs(props: TabsProps) {
   const stateRef = useRef<State>({
     tabs: [],
     activeTabId: undefined,
+    startPinnedTabs: [],
   });
 
   const getState = () => {
@@ -72,9 +78,11 @@ export function Tabs(props: TabsProps) {
       const handlersMap: {
         tabs?: (tabs: TabModel[]) => void;
         activeTabId?: (id: string | undefined) => void;
+        startPinnedTabs?: (ids: string[]) => void;
       } = {
         tabs: onTabsChange,
         activeTabId: onActiveTabIdChange,
+        startPinnedTabs: onStartPinnedTabsChange,
       };
 
       const subStateKeys: (keyof State)[] = Object.keys(
@@ -95,7 +103,7 @@ export function Tabs(props: TabsProps) {
         ...newState,
       };
     },
-    [onActiveTabIdChange, onTabsChange],
+    [onActiveTabIdChange, onTabsChange, onStartPinnedTabsChange],
   );
 
   const closeTab = useCallback(
@@ -113,6 +121,19 @@ export function Tabs(props: TabsProps) {
         activeTabId: activeTab?.id,
       });
 
+      forceRerender();
+    },
+    [forceRerender, setState],
+  );
+
+  const setStartPinnedTabs = useCallback(
+    (ids: string[], runHandlers = true) => {
+      setState(
+        {
+          startPinnedTabs: ids,
+        },
+        runHandlers,
+      );
       forceRerender();
     },
     [forceRerender, setState],
@@ -165,6 +186,12 @@ export function Tabs(props: TabsProps) {
       setTabs(tabsProp, false);
     }
   }, [tabsProp, setTabs]);
+
+  useEffect(() => {
+    if (startPinnedTabs) {
+      setStartPinnedTabs(startPinnedTabs, false);
+    }
+  }, [startPinnedTabs, setStartPinnedTabs]);
 
   if (tabs.length < 1) {
     return null;

@@ -1,6 +1,10 @@
 import { createBrowserRouter, Params } from "react-router-dom";
 import { AppLayout } from "src/components/AppLayout/AppLayout.tsx";
-import {ProductDetailRoute, ProductListRoute, ProductsRoute} from "src/routes/ProductsRoute.tsx";
+import {
+  ProductDetailRoute,
+  ProductListRoute,
+  ProductsRoute,
+} from "src/routes/ProductsRoute.tsx";
 import { CategoriesRoute } from "src/routes/CategoriesRoute.tsx";
 import { SuppliersRoute } from "src/routes/SuppliersRoute.tsx";
 import { HomeRoute } from "src/routes/HomeRoute.tsx";
@@ -8,13 +12,19 @@ import { TabStoreKey } from "src/constants/tabs.constants.ts";
 import * as routes from "src/constants/routes.constants.ts";
 
 export type TabHandle = {
-  storeKey: string;
+  key: string;
   title: (props: { params: Params }) => string;
-  type?: string;
 };
 
 export type Handle = {
   tabs: TabHandle[];
+};
+
+export const routeIds = {
+  product: {
+    layout: "product-layout",
+    list: "product-list",
+  },
 };
 
 export const router = createBrowserRouter([
@@ -27,42 +37,45 @@ export const router = createBrowserRouter([
         element: <HomeRoute />,
       },
       {
+        id: routeIds.product.layout,
         path: routes.productsRoute,
         element: <ProductsRoute />,
         handle: {
           tabs: [
             {
-              storeKey: TabStoreKey.Main,
+              key: TabStoreKey.Main,
               title: () => "products",
             },
           ],
         } as Handle,
         children: [
           {
+            id: routeIds.product.list,
             index: true,
-            element: <ProductListRoute/>,
+            element: <ProductListRoute />,
             handle: {
               tabs: [
                 {
-                  storeKey: TabStoreKey.Secondary,
+                  key: TabStoreKey.Products,
                   title: () => "list",
                 },
               ],
-            } as Handle
+            } as Handle,
           },
           {
             path: routes.productDetailRoute,
-            element: <ProductDetailRoute/>,
+            element: <ProductDetailRoute />,
             handle: {
               tabs: [
                 {
-                  storeKey: TabStoreKey.Secondary,
-                  title: ({params}: {params: {id: string}}) => `product ${params.id}`,
+                  key: TabStoreKey.Products,
+                  title: ({ params }: { params: { id: string } }) =>
+                    `product ${params.id}`,
                 },
               ],
-            } as Handle
-          }
-        ]
+            } as Handle,
+          },
+        ],
       },
       {
         path: routes.categoriesRoute,
@@ -70,7 +83,7 @@ export const router = createBrowserRouter([
         handle: {
           tabs: [
             {
-              storeKey: TabStoreKey.Main,
+              key: TabStoreKey.Main,
               title: () => "categories",
             },
           ],
@@ -82,7 +95,7 @@ export const router = createBrowserRouter([
         handle: {
           tabs: [
             {
-              storeKey: TabStoreKey.Main,
+              key: TabStoreKey.Main,
               title: () => "suppliers",
             },
           ],

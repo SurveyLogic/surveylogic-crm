@@ -1,4 +1,4 @@
-import { TabModel } from "src/tabbed-navigation.tsx";
+import { TabModel } from "src/lib/tabs";
 import { noop } from "src/utils/noop.ts";
 import { MouseEventHandler } from "react";
 
@@ -30,4 +30,3 @@ export function Tab(props: {
     </div>
   );
 }
-
