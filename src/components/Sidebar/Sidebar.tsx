@@ -2,8 +2,9 @@ import "./Sidebar.css";
 
 import { Link } from "react-router-dom";
 import * as routes from "src/constants/routes.constants.ts";
+import { memo } from "react";
 
-export function Sidebar() {
+export function RawSidebar() {
   return (
     <aside>
       <nav className={"sidebar-menu"}>
@@ -14,3 +15,5 @@ export function Sidebar() {
     </aside>
   );
 }
+
+export const Sidebar = memo(RawSidebar);

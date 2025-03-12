@@ -1,6 +1,15 @@
 import { useDataRouterContext } from "./hooks/useDataRouterContext.tsx";
-import { DataRouteMatch, matchRoutes, useMatches } from "react-router-dom";
+import {
+  DataRouteMatch,
+  matchRoutes,
+  UIMatch,
+  useMatches,
+} from "react-router-dom";
 import { Handle, TabHandle } from "./router.tsx";
+import { TabStoreKey } from "src/constants/tabs.constants.ts";
+import { useCallback, useEffect, useState } from "react";
+import { RouterState } from "@remix-run/router";
+import { last, replaceAt } from "src/utils/array-utils.ts";
 
 export type TabModel = {
   id: string;
@@ -10,14 +19,21 @@ export type TabModel = {
   storeKey: string;
 };
 
-export const getTabHandle = (
-  match: DataRouteMatch,
-  storeKey: string,
-): TabHandle | undefined => {
-  return (match.route?.handle as Handle | undefined)?.tabs.find(
-    (tabHandle: TabHandle) => tabHandle.storeKey === storeKey,
-  );
-};
+export const getTabHandle =
+  (storeKey: string) =>
+  (match: DataRouteMatch): TabHandle | undefined => {
+    return (match.route?.handle as Handle | undefined)?.tabs.find(
+      (tabHandle: TabHandle) => tabHandle.storeKey === storeKey,
+    );
+  };
+
+export const getTabHandleUI =
+  (storeKey: string) =>
+  (match: UIMatch<any, Handle>): TabHandle | undefined => {
+    return match?.handle?.tabs.find(
+      (tabHandle: TabHandle) => tabHandle.storeKey === storeKey,
+    );
+  };
 
 export function closestItem<T>(arr: T[], item: T): T | undefined {
   const index = arr.indexOf(item);
@@ -30,8 +46,8 @@ export function closestItem<T>(arr: T[], item: T): T | undefined {
   }
 }
 
-export const getTabLocation = (tab: TabModel) => {
-  const [pathname, search] = tab.path.split("?");
+export const pathToLocation = (path: string) => {
+  const [pathname, search] = path.split("?");
   return {
     pathname,
     search,
@@ -42,7 +58,7 @@ export const useTabMatches = (tab: TabModel) => {
   const dataRouterContext = useDataRouterContext();
   const matches = matchRoutes(
     dataRouterContext.router.routes,
-    getTabLocation(tab),
+    pathToLocation(tab.path),
   );
   return matches || [];
 };
@@ -50,29 +66,93 @@ export const useTabMatches = (tab: TabModel) => {
 export const useTabTitle = (tab: TabModel) => {
   const matches = useTabMatches(tab);
 
-  const match = matches
-    .slice()
-    .reverse()
-    .find((match) => getTabHandle(match, tab.storeKey));
+  const match = matches.slice().reverse().find(getTabHandle(tab.storeKey));
 
   if (match) {
-    const handle = getTabHandle(match!, tab.storeKey);
+    const handle = getTabHandle(tab.storeKey)(match!);
     return handle?.title?.(match);
   }
 };
 
-export const useActiveTab = (tabs: TabModel[]) => {
-  const matches = useMatches().slice().reverse();
+export const useActiveTabId = (key: TabStoreKey) => {
+  const matches = useMatches();
+  const storeMatches = matches.filter(getTabHandleUI(key));
 
-  for (let i = 0; i < matches.length; i++) {
-    const match = matches[i];
-    const tab = tabs.find(
-      (tab) => getTabLocation(tab).pathname === match.pathname,
-    );
-    if (tab) {
-      return tab;
-    }
-  }
+  return storeMatches[storeMatches.length - 1]?.pathname;
+};
 
-  return undefined;
+export const useTabbedNavigation = (storeKey: TabStoreKey) => {
+  const [tabs, setTabs] = useState<TabModel[]>([]);
+  const { router } = useDataRouterContext();
+  const updateTabs = useCallback(
+    (state: RouterState) => {
+      const { matches, location, navigation } = state;
+
+      if (navigation.location) {
+        return;
+      }
+
+      const match = matches.find(getTabHandle(storeKey));
+
+      if (!match) {
+        return;
+      }
+
+      const updateTabsState = (prevTabs: TabModel[]) => {
+        const doesTabBelongToRouteMatch = (tab: TabModel) => {
+          return (
+            tab.routeId === match.route.id &&
+            pathToLocation(tab.path).pathname.startsWith(match.pathname)
+          );
+        };
+
+        const tab = prevTabs.find(doesTabBelongToRouteMatch);
+
+        const { pathname } = last(matches);
+        const { search } = location;
+        const path = pathname + (search ? `${search}` : "");
+
+        if (tab) {
+          // update the tab path
+          const index = prevTabs.indexOf(tab);
+
+          return replaceAt(prevTabs, index, {
+            ...tab,
+            path,
+          });
+        }
+
+        const handle: Handle = match.route?.handle;
+        const title = handle.tabs[0]?.title?.(match);
+
+        const newTab = {
+          storeKey: storeKey,
+          id: match.pathname,
+          title,
+          path,
+          routeId: match.route.id,
+        };
+
+        // prepend a new tab
+        return [newTab, ...prevTabs];
+      };
+
+      setTabs(updateTabsState);
+    },
+    [storeKey],
+  );
+
+  useEffect(() => {
+    // fire immediately
+    updateTabs(router.state);
+    return router.subscribe(updateTabs);
+  }, [router, storeKey, updateTabs]);
+
+  const activeTabId = useActiveTabId(TabStoreKey.Main);
+
+  return {
+    activeTabId,
+    tabs,
+    setTabs,
+  };
 };
