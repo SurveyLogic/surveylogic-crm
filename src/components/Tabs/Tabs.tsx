@@ -15,7 +15,6 @@ type TabsProps = {
   hasControlledActiveTabId?: boolean;
   activeTabId?: string;
   tabs?: TabModel[];
-  storeKey: string;
   onActiveTabChange?: (tab: TabModel | undefined) => void;
   onTabsChange?: (tabs: TabModel[]) => void;
   apiRef?: React.Ref<TabsApi | undefined>;

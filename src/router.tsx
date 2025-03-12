@@ -1,6 +1,6 @@
 import { createBrowserRouter, Params } from "react-router-dom";
 import { AppLayout } from "src/components/AppLayout/AppLayout.tsx";
-import { ProductsRoute } from "src/routes/ProductsRoute.tsx";
+import {ProductDetailRoute, ProductListRoute, ProductsRoute} from "src/routes/ProductsRoute.tsx";
 import { CategoriesRoute } from "src/routes/CategoriesRoute.tsx";
 import { SuppliersRoute } from "src/routes/SuppliersRoute.tsx";
 import { HomeRoute } from "src/routes/HomeRoute.tsx";
@@ -37,6 +37,32 @@ export const router = createBrowserRouter([
             },
           ],
         } as Handle,
+        children: [
+          {
+            index: true,
+            element: <ProductListRoute/>,
+            handle: {
+              tabs: [
+                {
+                  storeKey: TabStoreKey.Secondary,
+                  title: () => "list",
+                },
+              ],
+            } as Handle
+          },
+          {
+            path: routes.productDetailRoute,
+            element: <ProductDetailRoute/>,
+            handle: {
+              tabs: [
+                {
+                  storeKey: TabStoreKey.Secondary,
+                  title: ({params}: {params: {id: string}}) => `product ${params.id}`,
+                },
+              ],
+            } as Handle
+          }
+        ]
       },
       {
         path: routes.categoriesRoute,

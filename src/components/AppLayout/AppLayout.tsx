@@ -29,7 +29,6 @@ export function AppLayout() {
           activeTabId={activeTabId}
           onTabsChange={setTabs}
           onActiveTabChange={changeTab}
-          storeKey={TabStoreKey.Main}
         />
         <Outlet />
       </div>

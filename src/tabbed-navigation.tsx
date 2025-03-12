@@ -101,7 +101,7 @@ export const useTabbedNavigation = (
         return;
       }
 
-      const match = matches.find(getTabHandle(storeKey));
+      const match = matches.slice().reverse().find(getTabHandle(storeKey));
 
       if (!match) {
         return;
@@ -157,7 +157,7 @@ export const useTabbedNavigation = (
     return router.subscribe(updateTabs);
   }, [router, storeKey, updateTabs]);
 
-  const activeTabId = useActiveTabId(TabStoreKey.Main);
+  const activeTabId = useActiveTabId(storeKey);
 
   return {
     activeTabId,
