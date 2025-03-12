@@ -6,9 +6,9 @@ export function Tab(props: {
   tab: TabModel;
   isActive: boolean;
   onClose?: (tab: TabModel) => void;
-  onActiveTabChange?: (tab: TabModel | undefined) => void;
+  onActiveTabIdChange?: (id: string | undefined) => void;
 }) {
-  const { tab, isActive, onClose = noop, onActiveTabChange = noop } = props;
+  const { tab, isActive, onClose = noop, onActiveTabIdChange = noop } = props;
 
   const className = ["tab", isActive && "active"].filter(Boolean).join(" ");
 
@@ -19,7 +19,7 @@ export function Tab(props: {
 
   return (
     <div
-      onClick={() => onActiveTabChange(tab)}
+      onClick={() => onActiveTabIdChange(tab.id)}
       key={tab.id}
       className={className}
     >

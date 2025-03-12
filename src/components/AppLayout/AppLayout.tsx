@@ -12,7 +12,7 @@ import { useRef } from "react";
 export function AppLayout() {
   const apiRef = useRef<TabsApi>();
 
-  const { activeTabId, tabs, setTabs, changeTab } = useTabbedNavigation(
+  const props = useTabbedNavigation(
     TabStoreKey.Main,
     routes.homeRoute,
   );
@@ -23,12 +23,8 @@ export function AppLayout() {
       <div className={"content"}>
         <header className={"header"}>John Doe</header>
         <Tabs
-          hasControlledActiveTabId
-          tabs={tabs}
           apiRef={apiRef}
-          activeTabId={activeTabId}
-          onTabsChange={setTabs}
-          onActiveTabChange={changeTab}
+          {...props}
         />
         <Outlet />
       </div>

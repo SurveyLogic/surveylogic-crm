@@ -90,7 +90,8 @@ export const useTabbedNavigation = (
   const { router } = useDataRouterContext();
   const navigate = useNavigate();
 
-  const changeTab = (tab: TabModel | undefined) => {
+  const onActiveTabIdChange = (id: string | undefined) => {
+    const tab = tabs.find(tab => tab.id === id);
     navigate(tab ? pathToLocation(tab.path) : fallbackPath);
   };
   const updateTabs = useCallback(
@@ -162,7 +163,8 @@ export const useTabbedNavigation = (
   return {
     activeTabId,
     tabs,
-    setTabs,
-    changeTab,
+    onTabsChange: setTabs,
+    onActiveTabIdChange,
+    hasControlledActiveTabId: true
   };
 };

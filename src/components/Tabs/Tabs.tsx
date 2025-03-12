@@ -1,92 +1,46 @@
 import "./Tabs.css";
-import React, { useEffect, useImperativeHandle, useReducer } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { noop } from "src/utils/noop.ts";
 import { removeItem } from "src/utils/array-utils.ts";
 import { closestItem, TabModel } from "src/tabbed-navigation.tsx";
 import { Tab } from "src/components/Tabs/Tab.tsx";
 
 export type TabsApi = {
-  setTabs: (tabs: TabModel[] | { (prevTabs: TabModel[]): TabModel[] }) => void;
-  setActiveTabId: (id: string) => void;
-  getTabs: () => TabModel[];
+  setTabs: (tabs: TabModel[]) => void;
+  setActiveTabId: (id: string | undefined) => void;
+  getState: () => State;
 };
 
 type TabsProps = {
   hasControlledActiveTabId?: boolean;
   activeTabId?: string;
   tabs?: TabModel[];
-  onActiveTabChange?: (tab: TabModel | undefined) => void;
+  onActiveTabIdChange?: (id: string | undefined) => void;
   onTabsChange?: (tabs: TabModel[]) => void;
   apiRef?: React.Ref<TabsApi | undefined>;
 };
 
 type State = {
-  readonly tabs: TabModel[];
-  readonly activeTabId: string | undefined;
+  tabs: TabModel[];
+  activeTabId: string | undefined;
 };
 
-type Action =
-  | {
-      type: "close-tab";
-      tab: TabModel;
-      onActiveTabChange?: (tab: TabModel | undefined) => void;
-      onTabsChange?: (tab: TabModel[]) => void;
-    }
-  | {
-      type: "set-tabs";
-      tabs: TabModel[];
-      onTabsChange?: (tab: TabModel[]) => void;
-    }
-  | {
-      type: "set-active-tab-id";
-      id: string | undefined;
-      onActiveTabChange?: (tab: TabModel | undefined) => void;
-    };
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "close-tab": {
-      const { tab, onTabsChange, onActiveTabChange } = action;
-      const { tabs, activeTabId: prevActiveId, ...rest } = state;
-
-      const prevActiveTab = tabs.find((tab) => tab.id === prevActiveId);
-      const activeTab =
-        prevActiveId === tab.id ? closestItem(tabs, tab) : prevActiveTab;
-
-      const updatedTabs = removeItem(tabs, tab);
-
-      onTabsChange?.(updatedTabs);
-      onActiveTabChange?.(activeTab);
-
-      return {
-        tabs: updatedTabs,
-        activeTabId: activeTab?.id,
-        ...rest,
-      };
-    }
-    case "set-tabs": {
-      const { tabs, onTabsChange } = action;
-      onTabsChange?.(tabs);
-      return {
-        ...state,
-        tabs,
-      };
-    }
-    case "set-active-tab-id": {
-      const { id, onActiveTabChange } = action;
-      const activeTab = state.tabs.find((tab) => tab.id === id);
-      onActiveTabChange?.(activeTab);
-      return {
-        ...state,
-        activeTabId: id,
-      };
-    }
-  }
-}
+const useForceRerender = () => {
+  const [, setIncrement] = useState(0);
+  return useCallback(() => {
+    setIncrement((prev) => prev + 1);
+  }, []);
+};
 
 export function Tabs(props: TabsProps) {
   const {
-    onActiveTabChange = noop,
+    onActiveTabIdChange = noop,
     apiRef,
     activeTabId: activeTabIdProp,
     hasControlledActiveTabId,
@@ -94,61 +48,123 @@ export function Tabs(props: TabsProps) {
     onTabsChange,
   } = props;
 
-  const [state, dispatch] = useReducer(reducer, {
+  const forceRerender = useForceRerender();
+
+  const stateRef = useRef<State>({
     tabs: [],
     activeTabId: undefined,
   });
 
+  const getState = () => {
+    return stateRef.current;
+  };
+
+  const setState = useCallback(
+    (
+      stateOrFn: Partial<State> | { (state: Partial<State>): State },
+      runHandlers = true,
+    ) => {
+      const newState =
+        typeof stateOrFn === "function"
+          ? stateOrFn(stateRef.current)
+          : stateOrFn;
+
+      const handlersMap: {
+        tabs?: (tabs: TabModel[]) => void;
+        activeTabId?: (id: string | undefined) => void;
+      } = {
+        tabs: onTabsChange,
+        activeTabId: onActiveTabIdChange,
+      };
+
+      const subStateKeys: (keyof State)[] = Object.keys(
+        newState,
+      ) as unknown as (keyof State)[];
+
+      if (runHandlers) {
+        subStateKeys.forEach((subStateKey) => {
+          const subState = newState[subStateKey];
+          const subStateHandler = handlersMap[subStateKey];
+          // @ts-ignore
+          subStateHandler?.(subState);
+        });
+      }
+
+      stateRef.current = {
+        ...stateRef.current,
+        ...newState,
+      };
+    },
+    [onActiveTabIdChange, onTabsChange],
+  );
+
+  const closeTab = useCallback(
+    (tab: TabModel) => {
+      const { tabs, activeTabId: prevActiveId } = getState();
+
+      const prevActiveTab = tabs.find((tab) => tab.id === prevActiveId);
+      const activeTab =
+        prevActiveId === tab.id ? closestItem(tabs, tab) : prevActiveTab;
+
+      const updatedTabs = removeItem(tabs, tab);
+
+      setState({
+        tabs: updatedTabs,
+        activeTabId: activeTab?.id,
+      });
+
+      forceRerender();
+    },
+    [forceRerender, setState],
+  );
+
+  const setTabs = useCallback(
+    (tabs: TabModel[], runHandlers = true) => {
+      setState(
+        {
+          tabs,
+        },
+        runHandlers,
+      );
+      forceRerender();
+    },
+    [forceRerender, setState],
+  );
+
+  const setActiveTabId = useCallback(
+    (id: string | undefined, runHandlers = true) => {
+      setState(
+        {
+          activeTabId: id,
+        },
+        runHandlers,
+      );
+      forceRerender();
+    },
+    [forceRerender, setState],
+  );
+
   useImperativeHandle(apiRef, () => ({
-    setTabs: (tabsArg) => {
-      const tabs =
-        typeof tabsArg === "function" ? tabsArg(state.tabs) : tabsArg;
-      dispatch({
-        type: "set-tabs",
-        tabs,
-        onTabsChange,
-      });
-    },
-    setActiveTabId: (id: string) => {
-      dispatch({
-        type: "set-active-tab-id",
-        id,
-        onActiveTabChange,
-      });
-    },
-    getTabs: () => state.tabs,
+    setTabs,
+    setActiveTabId,
+    getState,
   }));
 
-  const { tabs, activeTabId } = state;
+  const { tabs, activeTabId } = getState();
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
 
-  const closeTab = (tab: TabModel) => {
-    dispatch({
-      type: "close-tab",
-      tab,
-      onTabsChange,
-      onActiveTabChange,
-    });
-  };
-
   useEffect(() => {
     if (hasControlledActiveTabId) {
-      dispatch({
-        type: "set-active-tab-id",
-        id: activeTabIdProp,
-      });
+      setActiveTabId(activeTabIdProp, false);
     }
-  }, [hasControlledActiveTabId, activeTabIdProp]);
+  }, [hasControlledActiveTabId, activeTabIdProp, setActiveTabId]);
 
   useEffect(() => {
     if (tabsProp) {
-      dispatch({
-        type: "set-tabs",
-        tabs: tabsProp,
-      });
+      setTabs(tabsProp, false);
     }
-  }, [tabsProp]);
+  }, [tabsProp, setTabs]);
 
   if (tabs.length < 1) {
     return null;
@@ -158,7 +174,7 @@ export function Tabs(props: TabsProps) {
     <div className="tabs">
       {tabs.map((tab) => (
         <Tab
-          onActiveTabChange={onActiveTabChange}
+          onActiveTabIdChange={onActiveTabIdChange}
           onClose={closeTab}
           isActive={activeTab?.id === tab.id}
           tab={tab}
