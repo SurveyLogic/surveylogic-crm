@@ -1,6 +1,6 @@
 import { TabStoreKey } from "src/constants/tabs.constants.ts";
 import { Tabs } from "src/components/Tabs/Tabs.tsx";
-import { useTabbedNavigation } from "src/lib/tabs";
+import { TabbedNavigationMeta, useTabbedNavigation } from "src/lib/tabs";
 
 import {
   homeRoute,
@@ -8,18 +8,26 @@ import {
   productsListRoute,
 } from "src/constants/routes.constants.ts";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { routeIds } from "src/router.tsx";
+
+import { usePersistTabs } from "src/lib/tabs/persist.ts";
+import { localStorageDriver } from "src/lib/storage/local-storage.ts";
+
+const persistStoreKey = {
+  name: "product-tabs",
+  version: "1.0",
+};
 
 export function ProductsRoute() {
   const navigate = useNavigate();
-  const { getTabsProps } = useTabbedNavigation({
-    key: TabStoreKey.Products,
-    onCloseAllTabs: () => {
-      navigate(homeRoute);
-    },
-    initialStartPinnedTabs: [productsListRoute],
-    initialTabs: [
+  const { getTabsFromStorage, persistTabs } =
+    usePersistTabs<TabbedNavigationMeta>({
+      storageKey: persistStoreKey,
+      storage: localStorageDriver,
+    });
+  const [tabs, setTabs] = useState(
+    getTabsFromStorage || [
       {
         id: productsListRoute,
         title: "List",
@@ -29,12 +37,38 @@ export function ProductsRoute() {
         },
       },
     ],
+  );
+
+  const [startPinnedTabs, onStartPinnedTabsChange] = useState([
+    productsListRoute,
+  ]);
+
+  const { activeTabId, setActiveTabId } = useTabbedNavigation({
+    key: TabStoreKey.Products,
+    onCloseAllTabs: () => {
+      navigate(homeRoute);
+    },
+    startPinnedTabs: [productsListRoute],
+    tabs,
+    onTabsChange: setTabs,
     resolveTabMeta: useCallback(() => ({}), []),
   });
 
+  useEffect(() => {
+    return persistTabs(tabs);
+  }, [tabs, persistTabs]);
+
   return (
     <div>
-      <Tabs {...getTabsProps()} />
+      <Tabs
+        tabs={tabs}
+        onTabsChange={setTabs}
+        onStartPinnedTabsChange={onStartPinnedTabsChange}
+        startPinnedTabs={startPinnedTabs}
+        hasControlledActiveTabId
+        activeTabId={activeTabId}
+        onActiveTabIdChange={setActiveTabId}
+      />
       <Outlet />
     </div>
   );

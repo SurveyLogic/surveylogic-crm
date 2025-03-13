@@ -1,6 +1,6 @@
 import { useDataRouterContext } from "../../hooks/useDataRouterContext.tsx";
 import { useMatches, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { RouterState, AgnosticDataRouteMatch } from "@remix-run/router";
 import { last, replaceAt, insertAt } from "src/utils/array-utils.ts";
 import { TabModel, ValidTabMeta } from "src/lib/tabs/tabs.types.ts";
@@ -17,7 +17,7 @@ type ValidID<Params extends ValidParams = ValidParams> =
   | string
   | { (props: { params: Params }): string };
 
-type TabConfig<
+export type TabConfig<
   Params extends ValidParams = ValidParams,
   ID extends ValidID<Params> = ValidID<Params>,
 > = {
@@ -26,43 +26,36 @@ type TabConfig<
   title: ({ params }: { params: Params }) => string;
 };
 
-export class Tab<
-  Params extends ValidParams = ValidParams,
-  ID extends ValidID<Params> = ValidID<Params>,
-> {
-  routeId: string;
-  id: ID;
-  title: ({ params }: { params: Params }) => string;
-  constructor(props: TabConfig<Params, ID>) {
-    const { id, routeId, title } = props;
-    this.id = id;
-    this.routeId = routeId;
-    this.title = title;
-  }
-}
+type TabsChangeCallback<Meta extends ValidTabMeta = ValidTabMeta> = (
+  tabs:
+    | TabModel<TabbedNavigationMeta & Meta>[]
+    | {
+        (
+          prevTabs: TabModel<TabbedNavigationMeta & Meta>[],
+        ): TabModel<TabbedNavigationMeta & Meta>[];
+      },
+) => void;
 
 export const useTabbedNavigation2 = <
   Meta extends ValidTabMeta = ValidTabMeta,
   Params extends ValidParams = ValidParams,
 >(options: {
-  config: Tab<Params>[];
-  initialTabs?: TabModel<TabbedNavigationMeta & Meta>[];
-  initialStartPinnedTabs?: string[];
+  config: TabConfig<Params>[];
+  onTabsChange?: TabsChangeCallback<Meta>;
+  tabs: TabModel<TabbedNavigationMeta & Meta>[];
+  startPinnedTabs: string[];
   onCloseAllTabs: () => void;
   resolveTabMeta: (match: AgnosticDataRouteMatch) => Meta;
 }) => {
   const {
     resolveTabMeta,
     onCloseAllTabs,
-    initialTabs = [],
-    initialStartPinnedTabs = [],
+    onTabsChange,
+    tabs = [],
+    startPinnedTabs,
     config,
   } = options;
-  const [tabs, setTabs] =
-    useState<TabModel<TabbedNavigationMeta & Meta>[]>(initialTabs);
-  const [startPinnedTabs, setStartPinnedTabs] = useState<string[]>(
-    initialStartPinnedTabs,
-  );
+
   const { router } = useDataRouterContext();
   const navigate = useNavigate();
 
@@ -91,10 +84,13 @@ export const useTabbedNavigation2 = <
           );
           return [def, match];
         })
-        .filter(([def]) => !!def) as unknown as [Tab, AgnosticDataRouteMatch][];
+        .filter(([def]) => !!def) as unknown as [
+        TabConfig,
+        AgnosticDataRouteMatch,
+      ][];
 
       pairs.forEach(([def, match]) => {
-        setTabs((prevTabs) => {
+        onTabsChange?.((prevTabs) => {
           const tab = prevTabs.find(
             (tab) =>
               tab.id ===
@@ -134,7 +130,7 @@ export const useTabbedNavigation2 = <
         });
       });
     },
-    [resolveTabMeta, startPinnedTabs, config],
+    [resolveTabMeta, startPinnedTabs, config, onTabsChange],
   );
 
   useEffect(() => {
@@ -153,18 +149,7 @@ export const useTabbedNavigation2 = <
     })?.pathname;
 
   return {
-    getTabsProps: () => ({
-      activeTabId,
-      tabs,
-      onTabsChange: setTabs,
-      onActiveTabIdChange: setActiveTabId,
-      hasControlledActiveTabId: true,
-      startPinnedTabs,
-      onStartPinnedTabsChange: setStartPinnedTabs,
-    }),
-    setTabs,
     setActiveTabId,
-    tabs,
     activeTabId,
   };
 };
