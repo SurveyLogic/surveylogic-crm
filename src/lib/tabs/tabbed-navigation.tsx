@@ -77,6 +77,7 @@ export const useTabbedNavigation = <
 
   const setActiveTabId = (id: string | undefined) => {
     const tab = tabs.find((tab) => tab.id === id);
+
     if (tab) {
       navigate(pathToLocation(tab.meta.path));
     } else {

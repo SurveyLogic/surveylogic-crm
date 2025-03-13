@@ -1,6 +1,7 @@
 import { TabModel } from "src/lib/tabs";
 import { noop } from "src/utils/noop.ts";
 import { MouseEventHandler } from "react";
+import { css } from "@emotion/react";
 
 export function Tab(props: {
   tab: TabModel;
@@ -17,8 +18,6 @@ export function Tab(props: {
     isPinned,
   } = props;
 
-  const className = ["tab", isActive && "active"].filter(Boolean).join(" ");
-
   const handleClose: MouseEventHandler = (e) => {
     e.stopPropagation();
     onClose(tab);
@@ -28,7 +27,7 @@ export function Tab(props: {
     <div
       onClick={() => onActiveTabIdChange(tab.id)}
       key={tab.id}
-      className={className}
+      css={[tabStyles, isActive && activeTabStyles]}
     >
       {tab.title}
 
@@ -40,3 +39,41 @@ export function Tab(props: {
     </div>
   );
 }
+
+const activeTabStyles = css`
+  :after {
+    content: "";
+  }
+`;
+
+const tabStyles = css`
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8px 16px;
+  cursor: pointer;
+  user-select: none;
+
+  :hover {
+    background: #eee;
+
+    .close-trigger {
+      opacity: 1;
+    }
+  }
+
+  :after {
+    content: none;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: #0061fb;
+    position: absolute;
+  }
+
+  .close-trigger {
+    opacity: 0;
+    margin-left: 16px;
+  }
+`;

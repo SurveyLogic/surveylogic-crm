@@ -1,19 +1,18 @@
 import { useRef } from "react";
 import { noop } from "src/utils/noop.ts";
-import { Tab } from "src/examples/basic/components/Tabs/Tab.tsx";
+import { Tab } from "./Tab.tsx";
 import { TabsApi, TabsProps, useTabs } from "src/lib/tabs/useTabs.tsx";
 import { css } from "@emotion/react";
 
 export function Tabs(props: TabsProps) {
   const { onActiveTabIdChange = noop, apiRef: apiRefProp } = props;
+
   const localApiRef = useRef<TabsApi>({} as TabsApi);
   const apiRef = localApiRef || apiRefProp;
 
   useTabs(apiRef, props);
 
-  const { tabs, activeTabId, startPinnedTabs } = apiRef.current.getState();
-
-  const activeTab = tabs.find((tab) => tab.id === activeTabId);
+  const { tabs, startPinnedTabs, activeTabId } = apiRef.current.getState();
 
   return (
     <div css={rootStyles}>
@@ -22,7 +21,7 @@ export function Tabs(props: TabsProps) {
           onActiveTabIdChange={onActiveTabIdChange}
           onClose={apiRef.current.closeTab}
           isPinned={startPinnedTabs.includes(tab.id)}
-          isActive={activeTab?.id === tab.id}
+          isActive={activeTabId === tab.id}
           tab={tab}
           key={tab.id}
         />
@@ -33,6 +32,6 @@ export function Tabs(props: TabsProps) {
 
 const rootStyles = css`
   display: flex;
-  border-bottom: 1px solid #eee;
-  height: 40px;
+  height: 28px;
+  column-gap: 2px;
 `;

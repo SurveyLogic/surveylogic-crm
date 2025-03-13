@@ -1,8 +1,0 @@
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-}
-aside {
-  border-right: 1px solid #eee;
-  padding: 16px;
-}

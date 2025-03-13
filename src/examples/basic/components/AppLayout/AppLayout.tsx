@@ -1,11 +1,13 @@
-import "./AppLayout.css";
-
 import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar } from "src/examples/basic/components/Sidebar/Sidebar.tsx";
-import { Tabs, TabsApi } from "src/examples/basic/components/Tabs/Tabs.tsx";
+import { Sidebar } from "../../components/Sidebar/Sidebar.tsx";
+import { Tabs } from "../../components/Tabs/Tabs.tsx";
 
-import { TabStoreKey } from "src/examples/basic/constants/tabs.constants.ts";
-import { TabbedNavigationMeta, useTabbedNavigation } from "src/lib/tabs";
+import { TabStoreKey } from "../../constants/tabs.constants.ts";
+import {
+  TabbedNavigationMeta,
+  useTabbedNavigation,
+  TabsApi,
+} from "src/lib/tabs";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -13,10 +15,11 @@ import { usePersistTabs } from "src/lib/tabs/persist.ts";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
-import { basicExampleRoute } from "src/examples/basic/constants/routes.constants.ts";
+import { homeRoute } from "../../constants/routes.constants.ts";
+import { css } from "@emotion/react";
 
 const persistStoreKey = {
-  name: "main-tabs",
+  name: "basic__main-tabs",
   version: "1.0",
 };
 
@@ -43,7 +46,7 @@ export function AppLayout() {
     startPinnedTabs,
     key: TabStoreKey.Main,
     onCloseAllTabs: () => {
-      navigate(basicExampleRoute);
+      navigate(homeRoute);
     },
     resolveTabMeta: useCallback(() => ({}), []),
   });
@@ -53,10 +56,10 @@ export function AppLayout() {
   }, [tabs, persistTabs]);
 
   return (
-    <div className="layout">
+    <div css={layoutStyles}>
       <Sidebar />
-      <div className={"content"}>
-        <header className={"header"}>John Doe</header>
+      <div css={contentStyles}>
+        <header css={headerStyles}>John Doe</header>
         <Tabs
           apiRef={apiRef}
           tabs={tabs}
@@ -72,3 +75,23 @@ export function AppLayout() {
     </div>
   );
 }
+
+const layoutStyles = css`
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+  min-height: 100vh;
+`;
+
+const contentStyles = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const headerStyles = css`
+  height: 40px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  justify-content: end;
+`;

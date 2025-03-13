@@ -56,6 +56,8 @@ export const useTabbedNavigation2 = <
     config,
   } = options;
 
+  // todo: validate tabs
+
   const { router } = useDataRouterContext();
   const navigate = useNavigate();
 

@@ -14,7 +14,7 @@ import { SuppliersRoute } from "src/examples/basic/routes/SuppliersRoute.tsx";
 import { Handle } from "src/lib/tabs";
 import { AppLayout } from "src/examples/basic/components/AppLayout/AppLayout.tsx";
 import {
-  basicExampleRoute,
+  homeRoute,
   categoriesRoute,
   categoryDetailRoute,
   productDetailRoute,
@@ -125,7 +125,7 @@ const supplierRoutes = [
 
 export const basicExampleRoutes = [
   {
-    path: basicExampleRoute,
+    path: homeRoute,
     element: <AppLayout />,
     children: [
       {

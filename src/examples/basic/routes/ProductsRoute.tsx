@@ -15,13 +15,13 @@ import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import {
-  basicExampleRoute,
+  homeRoute,
   productDetailRoute,
   productsListRoute,
 } from "src/examples/basic/constants/routes.constants.ts";
 
 const persistStoreKey = {
-  name: "product-tabs",
+  name: "basic__product-tabs",
   version: "1.0",
 };
 
@@ -56,7 +56,7 @@ export function ProductsRoute() {
   const { activeTabId, setActiveTabId } = useTabbedNavigation({
     key: TabStoreKey.Products,
     onCloseAllTabs: useCallback(() => {
-      navigate(basicExampleRoute);
+      navigate(homeRoute);
     }, [navigate]),
     startPinnedTabs,
     tabs,

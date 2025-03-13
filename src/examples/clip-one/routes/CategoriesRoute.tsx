@@ -1,13 +1,14 @@
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 import { routeIds } from "../routes.tsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Tabs } from "src/examples/basic/components/Tabs/Tabs.tsx";
+import { Tabs } from "../components/Tabs/Tabs.tsx";
 import {
   TabbedNavigationMeta,
   TabConfig,
   useTabbedNavigation2,
 } from "src/lib/tabs/tabbed-navigation-2.tsx";
+import { data as categories } from "../data/categories.json";
 
 import { TabModel } from "src/lib/tabs";
 import { usePersistTabs } from "src/lib/tabs/persist.ts";
@@ -18,25 +19,32 @@ import {
   homeRoute,
   categoriesListRoute,
   categoryDetailRoute,
-} from "src/examples/basic/constants/routes.constants.ts";
+} from "../constants/routes.constants.ts";
+import { css } from "@emotion/react";
+import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
 
 type DetailTabParams = { id: string };
 
 const persistStoreKey = {
-  name: "basic__category-tabs",
+  name: "clip-one__category-tabs",
   version: "1.0",
 };
 
 export function CategoriesRoute() {
   const { router } = useDataRouterContext();
   const [listTab] = useState(() => ({
-    title: () => "List",
+    title: () => "All Categories",
     id: categoriesListRoute,
     routeId: routeIds.category.list,
   }));
 
   const [detailTab] = useState<TabConfig<DetailTabParams>>(() => ({
-    title: ({ params }) => `Category ${params.id}`,
+    title: ({ params }) => {
+      const category = categories.find(
+        (category) => String(category.id) == params.id,
+      );
+      return category!.title;
+    },
     id: ({ params }) => categoryDetailRoute.replace(":id", params.id),
     routeId: routeIds.category.detail,
   }));
@@ -82,10 +90,8 @@ export function CategoriesRoute() {
     resolveTabMeta: useCallback(() => ({}), []),
   });
 
-  //const {getTabsProps} = usePersistTabs(persistStoreKey, tabs)
-
   return (
-    <div>
+    <div css={layoutStyles}>
       <Tabs
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
@@ -95,27 +101,55 @@ export function CategoriesRoute() {
         hasControlledActiveTabId
         onStartPinnedTabsChange={setStartPinnedTabsChange}
       />
-      <Outlet />
+      <div css={tabContentStyles}>
+        <Outlet />
+      </div>
     </div>
   );
 }
 
 export function CategoryListRoute() {
+  const navigate = useNavigate();
   return (
-    <div>
-      <ul>
-        <li>
-          <Link to={categoryDetailRoute.replace(":id", "1")}>Category 1</Link>
-        </li>
-        <li>
-          <Link to={categoryDetailRoute.replace(":id", "2")}>Category 2</Link>
-        </li>
-      </ul>
+    <div
+      css={css`
+        padding: 10px;
+      `}
+    >
+      <Table
+        rows={categories}
+        onRowClick={(row) => {
+          navigate(categoryDetailRoute.replace(":id", String(row.id)));
+        }}
+        columns={[
+          {
+            field: "id",
+            name: "ID",
+            width: 40,
+          },
+          {
+            field: "title",
+            name: "Title",
+            width: 100,
+          },
+        ]}
+      />
     </div>
   );
 }
 
+const layoutStyles = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const tabContentStyles = css`
+  flex-grow: 1;
+  border: 1px solid var(--border-color);
+`;
+
 export function CategoryDetailRoute() {
   const params = useParams();
-  return <div>detail ${params.id}</div>;
+  return <div>category {params.id}</div>;
 }
