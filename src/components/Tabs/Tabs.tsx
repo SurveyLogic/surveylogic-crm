@@ -193,10 +193,6 @@ export function Tabs(props: TabsProps) {
     }
   }, [startPinnedTabs, setStartPinnedTabs]);
 
-  if (tabs.length < 1) {
-    return null;
-  }
-
   return (
     <div className="tabs">
       {tabs.map((tab) => (

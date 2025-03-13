@@ -1,9 +1,12 @@
 .tabs {
   display: flex;
   border-bottom: 1px solid #eee;
+  height: 40px;
 }
 
 .tab {
+  display: flex;
+  align-items: center;
   position: relative;
   padding: 8px 16px;
   cursor: pointer;
