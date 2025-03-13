@@ -1,17 +1,19 @@
 import "./AppLayout.css";
 
 import { Outlet, useNavigate } from "react-router-dom";
-import { Sidebar } from "src/components/Sidebar/Sidebar";
-import { Tabs, TabsApi } from "src/components/Tabs/Tabs.tsx";
+import { Sidebar } from "src/examples/basic/components/Sidebar/Sidebar.tsx";
+import { Tabs, TabsApi } from "src/examples/basic/components/Tabs/Tabs.tsx";
 
-import { TabStoreKey } from "src/constants/tabs.constants.ts";
+import { TabStoreKey } from "src/examples/basic/constants/tabs.constants.ts";
 import { TabbedNavigationMeta, useTabbedNavigation } from "src/lib/tabs";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as routes from "src/constants/routes.constants.ts";
 
 import { usePersistTabs } from "src/lib/tabs/persist.ts";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
+import { validateTabs } from "src/lib/tabs";
+import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
+import { basicExampleRoute } from "src/examples/basic/constants/routes.constants.ts";
 
 const persistStoreKey = {
   name: "main-tabs",
@@ -21,6 +23,7 @@ const persistStoreKey = {
 export function AppLayout() {
   const apiRef = useRef<TabsApi>();
   const navigate = useNavigate();
+  const { router } = useDataRouterContext();
 
   const { getTabsFromStorage, persistTabs } =
     usePersistTabs<TabbedNavigationMeta>({
@@ -28,7 +31,9 @@ export function AppLayout() {
       storageKey: persistStoreKey,
     });
 
-  const [tabs, setTabs] = useState(getTabsFromStorage() || []);
+  const [tabs, setTabs] = useState(() =>
+    validateTabs(getTabsFromStorage() || [], router.routes.slice()),
+  );
 
   const [startPinnedTabs, setStartPinnedTabsChange] = useState<string[]>([]);
 
@@ -38,7 +43,7 @@ export function AppLayout() {
     startPinnedTabs,
     key: TabStoreKey.Main,
     onCloseAllTabs: () => {
-      navigate(routes.homeRoute);
+      navigate(basicExampleRoute);
     },
     resolveTabMeta: useCallback(() => ({}), []),
   });

@@ -5,7 +5,7 @@ import {
   useMatches,
   useNavigate,
 } from "react-router-dom";
-import { Handle, TabHandle } from "../../router.tsx";
+import { Handle, TabHandle } from "src/lib/tabs";
 import { useCallback, useEffect } from "react";
 import { RouterState, AgnosticDataRouteMatch } from "@remix-run/router";
 import { last, replaceAt, insertAt } from "src/utils/array-utils.ts";

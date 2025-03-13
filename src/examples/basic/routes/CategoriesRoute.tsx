@@ -1,13 +1,8 @@
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 
-import {
-  categoriesListRoute,
-  categoryDetailRoute,
-  homeRoute,
-} from "src/constants/routes.constants.ts";
-import { routeIds } from "src/router.tsx";
+import { routeIds } from "../routes.tsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Tabs } from "src/components/Tabs/Tabs.tsx";
+import { Tabs } from "src/examples/basic/components/Tabs/Tabs.tsx";
 import {
   TabbedNavigationMeta,
   TabConfig,
@@ -17,6 +12,13 @@ import {
 import { TabModel } from "src/lib/tabs";
 import { usePersistTabs } from "src/lib/tabs/persist.ts";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
+import { validateTabs } from "src/lib/tabs";
+import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
+import {
+  basicExampleRoute,
+  categoriesListRoute,
+  categoryDetailRoute,
+} from "src/examples/basic/constants/routes.constants.ts";
 
 type DetailTabParams = { id: string };
 
@@ -26,6 +28,7 @@ const persistStoreKey = {
 };
 
 export function CategoriesRoute() {
+  const { router } = useDataRouterContext();
   const [listTab] = useState(() => ({
     title: () => "List",
     id: categoriesListRoute,
@@ -55,8 +58,8 @@ export function CategoriesRoute() {
     },
   ];
 
-  const [tabs, setTabs] = useState<TabModel<TabbedNavigationMeta>[]>(
-    getTabsFromStorage() || defaultTabs,
+  const [tabs, setTabs] = useState<TabModel<TabbedNavigationMeta>[]>(() =>
+    validateTabs(getTabsFromStorage() || defaultTabs, router.routes.slice()),
   );
 
   useEffect(() => {
@@ -71,7 +74,7 @@ export function CategoriesRoute() {
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
     config: useMemo(() => [listTab, detailTab], [listTab, detailTab]),
     onCloseAllTabs: () => {
-      navigate(homeRoute);
+      navigate(basicExampleRoute);
     },
     startPinnedTabs,
     tabs,

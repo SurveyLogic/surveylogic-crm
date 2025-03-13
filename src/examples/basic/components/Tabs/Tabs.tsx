@@ -9,7 +9,7 @@ import React, {
 import { noop } from "src/utils/noop.ts";
 import { removeItem } from "src/utils/array-utils.ts";
 import { closestItem, TabModel } from "src/lib/tabs";
-import { Tab } from "src/components/Tabs/Tab.tsx";
+import { Tab } from "src/examples/basic/components/Tabs/Tab.tsx";
 
 export type TabsApi = {
   setTabs: (tabs: TabModel[]) => void;
