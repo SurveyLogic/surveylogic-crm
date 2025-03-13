@@ -45,10 +45,10 @@ export function ProductsRoute() {
 
   const { activeTabId, setActiveTabId } = useTabbedNavigation({
     key: TabStoreKey.Products,
-    onCloseAllTabs: () => {
+    onCloseAllTabs: useCallback(() => {
       navigate(homeRoute);
-    },
-    startPinnedTabs: [productsListRoute],
+    }, [navigate]),
+    startPinnedTabs,
     tabs,
     onTabsChange: setTabs,
     resolveTabMeta: useCallback(() => ({}), []),
