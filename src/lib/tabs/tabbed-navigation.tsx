@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RouterState, AgnosticDataRouteMatch } from "@remix-run/router";
 import { last, replaceAt, insertAt } from "src/utils/array-utils.ts";
 import { TabModel, ValidTabMeta } from "src/lib/tabs/tabs.types.ts";
+import { pathToLocation } from "src/lib/tabs/tabs.utils.ts";
 
 export type TabbedNavigationMeta = {
   path: string;
@@ -31,25 +32,6 @@ export const getTabHandleUI =
       (tabHandle: TabHandle) => tabHandle.key === key,
     );
   };
-
-export function closestItem<T>(arr: T[], item: T): T | undefined {
-  const index = arr.indexOf(item);
-  if (index === -1) {
-    return arr[0];
-  } else if (index === arr.length - 1) {
-    return arr[arr.length - 2];
-  } else {
-    return arr[index + 1];
-  }
-}
-
-export const pathToLocation = (path: string) => {
-  const [pathname, search] = path.split("?");
-  return {
-    pathname,
-    search,
-  };
-};
 
 export const useActiveTabId = (key: string) => {
   const matches = useMatches() as UIMatch<any, Handle>[];

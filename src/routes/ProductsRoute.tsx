@@ -22,7 +22,6 @@ export function ProductsRoute() {
     initialTabs: [
       {
         id: productsListRoute,
-        key: TabStoreKey.Products,
         title: "List",
         meta: {
           routeId: routeIds.product.list,

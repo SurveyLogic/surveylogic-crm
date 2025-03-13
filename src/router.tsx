@@ -5,7 +5,11 @@ import {
   ProductListRoute,
   ProductsRoute,
 } from "src/routes/ProductsRoute.tsx";
-import { CategoriesRoute } from "src/routes/CategoriesRoute.tsx";
+import {
+  CategoriesRoute,
+  CategoryDetailRoute,
+  CategoryListRoute,
+} from "src/routes/CategoriesRoute.tsx";
 import { SuppliersRoute } from "src/routes/SuppliersRoute.tsx";
 import { HomeRoute } from "src/routes/HomeRoute.tsx";
 import { TabStoreKey } from "src/constants/tabs.constants.ts";
@@ -24,8 +28,102 @@ export const routeIds = {
   product: {
     layout: "product-layout",
     list: "product-list",
+    detail: "product-detail",
+  },
+  category: {
+    layout: "category-layout",
+    list: "category-list",
+    detail: "category-detail",
   },
 };
+
+const productRoutes = [
+  {
+    id: routeIds.product.layout,
+    path: routes.productsRoute,
+    element: <ProductsRoute />,
+    handle: {
+      tabs: [
+        {
+          key: TabStoreKey.Main,
+          title: () => "products",
+        },
+      ],
+    } as Handle,
+    children: [
+      {
+        id: routeIds.product.list,
+        index: true,
+        element: <ProductListRoute />,
+        handle: {
+          tabs: [
+            {
+              key: TabStoreKey.Products,
+              title: () => "list",
+            },
+          ],
+        } as Handle,
+      },
+      {
+        id: routeIds.product.detail,
+        path: routes.productDetailRoute,
+        element: <ProductDetailRoute />,
+        handle: {
+          tabs: [
+            {
+              key: TabStoreKey.Products,
+              title: ({ params }: { params: { id: string } }) =>
+                `product ${params.id}`,
+            },
+          ],
+        } as Handle,
+      },
+    ],
+  },
+];
+
+const categoryRoutes = [
+  {
+    path: routes.categoriesRoute,
+    element: <CategoriesRoute />,
+    id: routeIds.category.layout,
+    handle: {
+      tabs: [
+        {
+          key: TabStoreKey.Main,
+          title: () => "categories",
+        },
+      ],
+    } as Handle,
+    children: [
+      {
+        id: routeIds.category.list,
+        index: true,
+        element: <CategoryListRoute />,
+      },
+      {
+        id: routeIds.category.detail,
+        path: routes.categoryDetailRoute,
+        element: <CategoryDetailRoute />,
+      },
+    ],
+  },
+];
+
+const supplierRoutes = [
+  {
+    path: routes.suppliersRoute,
+    element: <SuppliersRoute />,
+    handle: {
+      tabs: [
+        {
+          key: TabStoreKey.Main,
+          title: () => "suppliers",
+        },
+      ],
+    } as Handle,
+  },
+];
 
 export const router = createBrowserRouter([
   {
@@ -36,71 +134,9 @@ export const router = createBrowserRouter([
         index: true,
         element: <HomeRoute />,
       },
-      {
-        id: routeIds.product.layout,
-        path: routes.productsRoute,
-        element: <ProductsRoute />,
-        handle: {
-          tabs: [
-            {
-              key: TabStoreKey.Main,
-              title: () => "products",
-            },
-          ],
-        } as Handle,
-        children: [
-          {
-            id: routeIds.product.list,
-            index: true,
-            element: <ProductListRoute />,
-            handle: {
-              tabs: [
-                {
-                  key: TabStoreKey.Products,
-                  title: () => "list",
-                },
-              ],
-            } as Handle,
-          },
-          {
-            path: routes.productDetailRoute,
-            element: <ProductDetailRoute />,
-            handle: {
-              tabs: [
-                {
-                  key: TabStoreKey.Products,
-                  title: ({ params }: { params: { id: string } }) =>
-                    `product ${params.id}`,
-                },
-              ],
-            } as Handle,
-          },
-        ],
-      },
-      {
-        path: routes.categoriesRoute,
-        element: <CategoriesRoute />,
-        handle: {
-          tabs: [
-            {
-              key: TabStoreKey.Main,
-              title: () => "categories",
-            },
-          ],
-        } as Handle,
-      },
-      {
-        path: routes.suppliersRoute,
-        element: <SuppliersRoute />,
-        handle: {
-          tabs: [
-            {
-              key: TabStoreKey.Main,
-              title: () => "suppliers",
-            },
-          ],
-        } as Handle,
-      },
+      ...productRoutes,
+      ...categoryRoutes,
+      ...supplierRoutes,
     ],
   },
 ]);
