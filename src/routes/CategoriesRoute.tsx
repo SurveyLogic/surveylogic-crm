@@ -87,6 +87,7 @@ export function CategoriesRoute() {
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
         tabs={tabs}
+        startPinnedTabs={startPinnedTabs}
         onTabsChange={setTabs}
         hasControlledActiveTabId
         onStartPinnedTabsChange={setStartPinnedTabsChange}

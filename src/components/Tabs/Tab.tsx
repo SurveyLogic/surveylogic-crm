@@ -4,11 +4,18 @@ import { MouseEventHandler } from "react";
 
 export function Tab(props: {
   tab: TabModel;
+  isPinned: boolean;
   isActive: boolean;
   onClose?: (tab: TabModel) => void;
   onActiveTabIdChange?: (id: string | undefined) => void;
 }) {
-  const { tab, isActive, onClose = noop, onActiveTabIdChange = noop } = props;
+  const {
+    tab,
+    isActive,
+    onClose = noop,
+    onActiveTabIdChange = noop,
+    isPinned,
+  } = props;
 
   const className = ["tab", isActive && "active"].filter(Boolean).join(" ");
 
@@ -24,9 +31,12 @@ export function Tab(props: {
       className={className}
     >
       {tab.title}
-      <span className={"close-trigger"} onClick={handleClose}>
-        x
-      </span>
+
+      {!isPinned && (
+        <span className={"close-trigger"} onClick={handleClose}>
+          x
+        </span>
+      )}
     </div>
   );
 }

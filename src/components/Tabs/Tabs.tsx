@@ -46,7 +46,7 @@ export function Tabs(props: TabsProps) {
     onActiveTabIdChange = noop,
     apiRef,
     activeTabId: activeTabIdProp,
-    startPinnedTabs,
+    startPinnedTabs: startPinnedTabsProp,
     hasControlledActiveTabId,
     tabs: tabsProp,
     onTabsChange,
@@ -108,7 +108,7 @@ export function Tabs(props: TabsProps) {
 
   const closeTab = useCallback(
     (tab: TabModel) => {
-      const { tabs, activeTabId: prevActiveId } = getState();
+      const { tabs, activeTabId: prevActiveId, startPinnedTabs } = getState();
 
       const prevActiveTab = tabs.find((tab) => tab.id === prevActiveId);
       const activeTab =
@@ -119,6 +119,7 @@ export function Tabs(props: TabsProps) {
       setState({
         tabs: updatedTabs,
         activeTabId: activeTab?.id,
+        startPinnedTabs: startPinnedTabs.filter((id) => id !== tab.id),
       });
 
       forceRerender();
@@ -171,7 +172,7 @@ export function Tabs(props: TabsProps) {
     getState,
   }));
 
-  const { tabs, activeTabId } = getState();
+  const { tabs, activeTabId, startPinnedTabs } = getState();
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
 
@@ -188,10 +189,10 @@ export function Tabs(props: TabsProps) {
   }, [tabsProp, setTabs]);
 
   useEffect(() => {
-    if (startPinnedTabs) {
-      setStartPinnedTabs(startPinnedTabs, false);
+    if (startPinnedTabsProp) {
+      setStartPinnedTabs(startPinnedTabsProp, false);
     }
-  }, [startPinnedTabs, setStartPinnedTabs]);
+  }, [startPinnedTabsProp, setStartPinnedTabs]);
 
   return (
     <div className="tabs">
@@ -199,6 +200,7 @@ export function Tabs(props: TabsProps) {
         <Tab
           onActiveTabIdChange={onActiveTabIdChange}
           onClose={closeTab}
+          isPinned={startPinnedTabs.includes(tab.id)}
           isActive={activeTab?.id === tab.id}
           tab={tab}
           key={tab.id}
