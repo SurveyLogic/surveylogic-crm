@@ -31,5 +31,15 @@ export const validateTabs = <
 
         return tabRoute && tabIsMatched;
       })
+      .filter((tab, index, tabs) => {
+        // filter out duplicative tab route ids
+        const routeIds = tabs.map((tab) => tab.meta.routeId);
+        return routeIds.indexOf(tab.meta.routeId) === index;
+      })
+      .filter((tab, index, tabs) => {
+        // filter out duplicative tab ids
+        const tabIds = tabs.map((tab) => tab.id);
+        return tabIds.indexOf(tab.id) === index;
+      })
   );
 };
