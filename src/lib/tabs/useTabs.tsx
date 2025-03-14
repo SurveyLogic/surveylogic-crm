@@ -24,8 +24,11 @@ export type TabsApi = {
 export type TabsProps = {
   hasControlledActiveTabId?: boolean;
   activeTabId?: string;
+  initialActiveTabId?: string;
   startPinnedTabs?: string[];
   tabs?: TabModel<any>[];
+  initialTabs?: TabModel<any>[];
+  initialStartPinnedTabs?: string[];
   onActiveTabIdChange?: (id: string | undefined) => void;
   onStartPinnedTabsChange?: (ids: string[]) => void;
   onTabsChange?: (tabs: TabModel<any>[]) => void;
@@ -91,7 +94,14 @@ const useActive = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
 };
 
 const useTabsState = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
-  const { onTabsChange, onActiveTabIdChange, onStartPinnedTabsChange } = props;
+  const {
+    onTabsChange,
+    onActiveTabIdChange,
+    onStartPinnedTabsChange,
+    initialTabs = [],
+    initialActiveTabId,
+    initialStartPinnedTabs = [],
+  } = props;
   const handlersMapRef = useRef<{
     tabs?: (tabs: TabModel[]) => void;
     activeTabId?: (id: string | undefined) => void;
@@ -103,9 +113,9 @@ const useTabsState = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
   });
 
   const stateRef = useRef<State>({
-    tabs: [],
-    activeTabId: undefined,
-    startPinnedTabs: [],
+    tabs: initialTabs,
+    activeTabId: initialActiveTabId,
+    startPinnedTabs: initialStartPinnedTabs,
   });
 
   apiRef.current["getState"] = () => {

@@ -92,6 +92,9 @@ export function AppLayout() {
               onTabsChange={setTabs}
               onStartPinnedTabsChange={setStartPinnedTabsChange}
               startPinnedTabs={startPinnedTabs}
+              initialActiveTabId={activeTabId}
+              initialTabs={tabs}
+              initialStartPinnedTabs={startPinnedTabs}
               hasControlledActiveTabId
               activeTabId={activeTabId}
               onActiveTabIdChange={setActiveTabId}

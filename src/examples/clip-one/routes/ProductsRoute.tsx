@@ -95,6 +95,9 @@ export function ProductsRoute() {
         onTabsChange={setTabs}
         onStartPinnedTabsChange={onStartPinnedTabsChange}
         startPinnedTabs={startPinnedTabs}
+        initialActiveTabId={activeTabId}
+        initialTabs={tabs}
+        initialStartPinnedTabs={startPinnedTabs}
         hasControlledActiveTabId
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
