@@ -187,39 +187,52 @@ const tabContentStyles = css`
 export function ProductDetailRoute() {
   const params = useParams() as DetailParams;
 
-  const [generalTab] = useState(() => ({
-    id: productDetailRoute.replace(":id", params.id),
-    title: "General",
-    meta: {
-      routeId: routeIds.product.detail,
-      path: productDetailRoute.replace(":id", params.id),
-    },
-  }));
-  const [settingsTab] = useState(() => ({
-    id: productDetailSettingTabsRoute.replace(":id", params.id),
-    title: "Settings",
-    meta: {
-      routeId: routeIds.product.tabs.settings,
-      path: productDetailSettingTabsRoute.replace(":id", params.id),
-    },
-  }));
+  const generalTab = useMemo(
+    () => ({
+      id: productDetailRoute.replace(":id", params.id),
+      title: "General",
+      meta: {
+        routeId: routeIds.product.detail,
+        path: productDetailRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
+  const settingsTab = useMemo(
+    () => ({
+      id: productDetailSettingTabsRoute.replace(":id", params.id),
+      title: "Settings",
+      meta: {
+        routeId: routeIds.product.tabs.settings,
+        path: productDetailSettingTabsRoute.replace(":id", params.id),
+      },
+    }),
+    [params.id],
+  );
 
-  const [tabs, setTabs] = useState(() => [generalTab, settingsTab]);
+  const [tabs, setTabs] = useState([generalTab, settingsTab]);
 
-  const [config] = useState(() => [
-    {
-      title: () => generalTab.title,
-      id: generalTab.id,
-      routeId: generalTab.meta.routeId,
-      insertMethod: InsertMethod.Prepend,
-    },
-    {
-      title: () => settingsTab.title,
-      id: settingsTab.id,
-      routeId: settingsTab.meta.routeId,
-      insertMethod: InsertMethod.Prepend,
-    },
-  ]);
+  useEffect(() => {
+    setTabs([generalTab, settingsTab]);
+  }, [generalTab, settingsTab]);
+
+  const config = useMemo(
+    () => [
+      {
+        title: () => generalTab.title,
+        id: generalTab.id,
+        routeId: generalTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+      {
+        title: () => settingsTab.title,
+        id: settingsTab.id,
+        routeId: settingsTab.meta.routeId,
+        insertMethod: InsertMethod.Prepend,
+      },
+    ],
+    [settingsTab, generalTab],
+  );
 
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
     config,
