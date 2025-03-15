@@ -1,5 +1,5 @@
 import { Tabs } from "../components/Tabs/Tabs.tsx";
-import { TabbedNavigationMeta } from "src/lib/tabs";
+import { TabbedNavigationMeta, TabModel } from "src/lib/tabs";
 
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -187,10 +187,11 @@ const tabContentStyles = css`
 export function ProductDetailRoute() {
   const params = useParams() as DetailParams;
 
-  const generalTab = useMemo(
+  const generalTab = useMemo<TabModel<TabbedNavigationMeta>>(
     () => ({
       id: productDetailRoute.replace(":id", params.id),
       title: "General",
+      isClosable: false,
       meta: {
         routeId: routeIds.product.detail,
         path: productDetailRoute.replace(":id", params.id),
@@ -198,10 +199,11 @@ export function ProductDetailRoute() {
     }),
     [params.id],
   );
-  const settingsTab = useMemo(
+  const settingsTab = useMemo<TabModel<TabbedNavigationMeta>>(
     () => ({
       id: productDetailSettingTabsRoute.replace(":id", params.id),
       title: "Settings",
+      isClosable: false,
       meta: {
         routeId: routeIds.product.tabs.settings,
         path: productDetailSettingTabsRoute.replace(":id", params.id),

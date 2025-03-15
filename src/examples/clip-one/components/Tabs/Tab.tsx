@@ -6,6 +6,7 @@ import { css } from "@emotion/react";
 export function Tab(props: {
   tab: TabModel;
   isPinned: boolean;
+  isClosable?: boolean;
   isActive: boolean;
   onClose?: (tab: TabModel) => void;
   onActiveTabIdChange?: (id: string | undefined) => void;
@@ -14,6 +15,7 @@ export function Tab(props: {
     tab,
     isActive,
     onClose = noop,
+    isClosable = true,
     onActiveTabIdChange = noop,
     isPinned,
   } = props;
@@ -23,6 +25,8 @@ export function Tab(props: {
     onClose(tab);
   };
 
+  const canBeClosed = !isPinned && isClosable;
+
   return (
     <div
       onClick={() => onActiveTabIdChange(tab.id)}
@@ -31,11 +35,13 @@ export function Tab(props: {
         isActive,
       })}
     >
-      <span className={!isPinned ? "truncate-on-hover tab-title" : "tab-title"}>
+      <span
+        className={canBeClosed ? "truncate-on-hover tab-title" : "tab-title"}
+      >
         {tab.title}
       </span>
 
-      {!isPinned && (
+      {canBeClosed && (
         <span
           className={"tab-close-trigger"}
           css={closeTriggerStyles}

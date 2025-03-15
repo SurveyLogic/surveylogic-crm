@@ -18,6 +18,7 @@ export function Tabs(props: TabsProps) {
     <div css={rootStyles}>
       {tabs.map((tab) => (
         <Tab
+          isClosable={tab.isClosable}
           onActiveTabIdChange={onActiveTabIdChange}
           onClose={apiRef.current.closeTab}
           isPinned={startPinnedTabs.includes(tab.id)}
