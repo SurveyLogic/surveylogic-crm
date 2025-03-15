@@ -4,6 +4,7 @@ import { routeIds } from "../routes.tsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Tabs } from "../components/Tabs/Tabs.tsx";
 import {
+  InsertMethod,
   TabbedNavigationMeta,
   TabConfig,
   useTabbedNavigation2,
@@ -32,13 +33,14 @@ const persistStoreKey = {
 
 export function CategoriesRoute() {
   const { router } = useDataRouterContext();
-  const [listTab] = useState(() => ({
+  const [listTabDef] = useState(() => ({
     title: () => "All Categories",
     id: categoriesListRoute,
     routeId: routeIds.category.list,
+    insertMethod: InsertMethod.Prepend,
   }));
 
-  const [detailTab] = useState<TabConfig<DetailTabParams>>(() => ({
+  const [detailTabDef] = useState<TabConfig<DetailTabParams>>(() => ({
     title: ({ params }) => {
       const category = categories.find(
         (category) => String(category.id) == params.id,
@@ -47,6 +49,7 @@ export function CategoriesRoute() {
     },
     id: ({ params }) => categoryDetailRoute.replace(":id", params.id),
     routeId: routeIds.category.detail,
+    insertMethod: InsertMethod.Prepend,
   }));
 
   const { getTabsFromStorage, persistTabs } =
@@ -57,10 +60,10 @@ export function CategoriesRoute() {
 
   const defaultTabs: TabModel<TabbedNavigationMeta>[] = [
     {
-      id: listTab.id,
+      id: listTabDef.id,
       title: "List",
       meta: {
-        routeId: listTab.id,
+        routeId: listTabDef.id,
         path: "",
       },
     },
@@ -75,14 +78,17 @@ export function CategoriesRoute() {
   }, [tabs, persistTabs]);
 
   const [startPinnedTabs, setStartPinnedTabsChange] = useState<string[]>([
-    listTab.id,
+    listTabDef.id,
   ]);
 
   const [endPinnedTabs] = useState<string[]>([]);
 
   const navigate = useNavigate();
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
-    config: useMemo(() => [listTab, detailTab], [listTab, detailTab]),
+    config: useMemo(
+      () => [listTabDef, detailTabDef],
+      [listTabDef, detailTabDef],
+    ),
     onCloseAllTabs: () => {
       navigate(homeRoute);
     },

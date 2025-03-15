@@ -23,8 +23,14 @@ export type TabConfig<
 > = {
   routeId: string;
   id: ID;
+  insertMethod: InsertMethod;
   title: ({ params }: { params: Params }) => string;
 };
+
+export enum InsertMethod {
+  Append = "append",
+  Prepend = "prepend",
+}
 
 type TabsChangeCallback<Meta extends ValidTabMeta = ValidTabMeta> = (
   tabs:
@@ -118,7 +124,7 @@ export const useTabbedNavigation2 = <
               },
             });
           } else {
-            const prepend = true;
+            const prepend = def.insertMethod === InsertMethod.Prepend;
 
             const newTab: TabModel<TabbedNavigationMeta & Meta> = {
               id: typeof def.id === "function" ? def.id(match) : def.id,
@@ -131,13 +137,15 @@ export const useTabbedNavigation2 = <
             };
 
             // prepend a new tab
-            return prepend
-              ? insertAt(prevTabs, startPinnedTabs.length, newTab)
-              : insertAt(
-                  prevTabs,
-                  prevTabs.length - 1 - endPinnedTabs.length,
-                  newTab,
-                );
+            if (prepend) {
+              return insertAt(prevTabs, startPinnedTabs.length, newTab);
+            } else {
+              return insertAt(
+                prevTabs,
+                prevTabs.length - endPinnedTabs.length,
+                newTab,
+              );
+            }
           }
         });
       });

@@ -17,7 +17,10 @@ import {
   productsCreateRoute,
   productsListRoute,
 } from "../constants/routes.constants.ts";
-import { useTabbedNavigation2 } from "src/lib/tabs/tabbed-navigation-2.tsx";
+import {
+  InsertMethod,
+  useTabbedNavigation2,
+} from "src/lib/tabs/tabbed-navigation-2.tsx";
 import { css } from "@emotion/react";
 import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
 import { Button } from "src/examples/clip-one/components/Button/Button.tsx";
@@ -57,26 +60,31 @@ export function ProductsRoute() {
     id: ({ params }: { params: DetailParams }) =>
       productDetailRoute.replace(":id", params.id),
     routeId: routeIds.product.detail,
+    insertMethod: InsertMethod.Prepend,
   }));
 
   const [listTabDefinition] = useState(() => ({
     title: () => listTab.title,
     id: listTab.id,
     routeId: listTab.meta.routeId,
+    insertMethod: InsertMethod.Prepend,
   }));
 
   const [createTabDefinition] = useState(() => ({
     title: () => "New product",
     id: productsCreateRoute,
     routeId: routeIds.product.create,
+    insertMethod: InsertMethod.Append,
   }));
 
   const [tabs, setTabs] = useState(() =>
     validateTabs(getTabsFromStorage() || [listTab], router.routes.slice()),
   );
 
-  const [startPinnedTabs, setStartPinnedTabs] = useState([productsListRoute]);
-  const [endPinnedTabs, setEndPinnedTabs] = useState([productsCreateRoute]);
+  const [startPinnedTabs, setStartPinnedTabs] = useState<string[]>([
+    productsListRoute,
+  ]);
+  const [endPinnedTabs, setEndPinnedTabs] = useState<string[]>([]);
 
   const [config] = useState(() => [
     listTabDefinition,
@@ -91,7 +99,7 @@ export function ProductsRoute() {
     }, [navigate]),
     startPinnedTabs,
     tabs,
-    endPinnedTabs: useMemo(() => [], []),
+    endPinnedTabs,
     onTabsChange: setTabs,
     resolveTabMeta: useCallback(() => ({}), []),
   });
@@ -203,11 +211,13 @@ export function ProductDetailRoute() {
       title: () => generalTab.title,
       id: generalTab.id,
       routeId: generalTab.meta.routeId,
+      insertMethod: InsertMethod.Prepend,
     },
     {
       title: () => settingsTab.title,
       id: settingsTab.id,
       routeId: settingsTab.meta.routeId,
+      insertMethod: InsertMethod.Prepend,
     },
   ]);
 

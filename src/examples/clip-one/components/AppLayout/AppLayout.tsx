@@ -17,7 +17,10 @@ import {
   productsRoute,
   suppliersRoute,
 } from "../../constants/routes.constants.ts";
-import { useTabbedNavigation2 } from "src/lib/tabs/tabbed-navigation-2.tsx";
+import {
+  InsertMethod,
+  useTabbedNavigation2,
+} from "src/lib/tabs/tabbed-navigation-2.tsx";
 import { routeIds } from "../../routes.tsx";
 import { css } from "@emotion/react";
 
@@ -47,21 +50,25 @@ export function AppLayout() {
       title: () => "Dashboard",
       id: dashboardRoute,
       routeId: routeIds.dashboard,
+      insertMethod: InsertMethod.Prepend,
     },
     {
       title: () => "Categories",
       id: categoriesRoute,
       routeId: routeIds.category.layout,
+      insertMethod: InsertMethod.Prepend,
     },
     {
       title: () => "Products",
       id: productsRoute,
       routeId: routeIds.product.layout,
+      insertMethod: InsertMethod.Prepend,
     },
     {
       title: () => "Suppliers",
       id: suppliersRoute,
       routeId: routeIds.supplier.layout,
+      insertMethod: InsertMethod.Prepend,
     },
   ]);
 
