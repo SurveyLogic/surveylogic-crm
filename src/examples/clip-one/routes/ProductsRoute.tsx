@@ -157,7 +157,7 @@ export function ProductDetailRoute() {
 
   const [generalTab] = useState(() => ({
     id: productDetailRoute.replace(":id", params.id),
-    title: "General Tab",
+    title: "General",
     meta: {
       routeId: routeIds.product.detail,
       path: productDetailRoute.replace(":id", params.id),
@@ -165,7 +165,7 @@ export function ProductDetailRoute() {
   }));
   const [settingsTab] = useState(() => ({
     id: productDetailSettingTabsRoute.replace(":id", params.id),
-    title: "Settings Tab",
+    title: "Settings",
     meta: {
       routeId: routeIds.productSettingsTab,
       path: productDetailSettingTabsRoute.replace(":id", params.id),
