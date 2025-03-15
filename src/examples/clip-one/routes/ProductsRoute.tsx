@@ -13,6 +13,7 @@ import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import {
   homeRoute,
   productDetailRoute,
+  productDetailSettingTabsRoute,
   productsListRoute,
 } from "../constants/routes.constants.ts";
 import { useTabbedNavigation2 } from "src/lib/tabs/tabbed-navigation-2.tsx";
@@ -147,10 +148,83 @@ const layoutStyles = css`
 
 const tabContentStyles = css`
   flex-grow: 1;
+  padding: 10px;
   border: 1px solid var(--border-color);
 `;
 
 export function ProductDetailRoute() {
-  const params = useParams();
-  return <div>product ${params.id}</div>;
+  const params = useParams() as DetailParams;
+
+  const [generalTab] = useState(() => ({
+    id: productDetailRoute.replace(":id", params.id),
+    title: "General Tab",
+    meta: {
+      routeId: routeIds.product.detail,
+      path: productDetailRoute.replace(":id", params.id),
+    },
+  }));
+  const [settingsTab] = useState(() => ({
+    id: productDetailSettingTabsRoute.replace(":id", params.id),
+    title: "Settings Tab",
+    meta: {
+      routeId: routeIds.productSettingsTab,
+      path: productDetailSettingTabsRoute.replace(":id", params.id),
+    },
+  }));
+
+  const [tabs, setTabs] = useState(() => [generalTab, settingsTab]);
+
+  const [config] = useState(() => [
+    {
+      title: () => generalTab.title,
+      id: generalTab.id,
+      routeId: generalTab.meta.routeId,
+    },
+    {
+      title: () => settingsTab.title,
+      id: settingsTab.id,
+      routeId: settingsTab.meta.routeId,
+    },
+  ]);
+
+  const { activeTabId, setActiveTabId } = useTabbedNavigation2({
+    config,
+    onCloseAllTabs: useCallback(() => {}, []),
+    startPinnedTabs: [],
+    tabs,
+    onTabsChange: useCallback(() => {}, []),
+    resolveTabMeta: useCallback(() => ({}), []),
+  });
+
+  return (
+    <div css={detailFormLayout}>
+      <Tabs
+        tabs={tabs}
+        onTabsChange={setTabs}
+        initialActiveTabId={activeTabId}
+        initialTabs={tabs}
+        hasControlledActiveTabId
+        activeTabId={activeTabId}
+        onActiveTabIdChange={setActiveTabId}
+      />
+      <div css={tabContentStyles}>
+        <Outlet />
+      </div>
+    </div>
+  );
+}
+
+const detailFormLayout = css({
+  flexGrow: 1,
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+});
+
+export function ProductGeneralTab() {
+  return <div>General</div>;
+}
+
+export function ProductSettingsTab() {
+  return <div>Settings</div>;
 }

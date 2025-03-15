@@ -1,7 +1,9 @@
 import { HomeRoute } from "./routes/HomeRoute.tsx";
 import {
   ProductDetailRoute,
+  ProductGeneralTab,
   ProductListRoute,
+  ProductSettingsTab,
   ProductsRoute,
 } from "./routes/ProductsRoute.tsx";
 import {
@@ -19,6 +21,7 @@ import {
   productsRoute,
   suppliersRoute,
   dashboardRoute,
+  productDetailSettingTabsRoute,
 } from "./constants/routes.constants.ts";
 import { DashboardRoute } from "src/examples/clip-one/routes/DashboardRoute.tsx";
 
@@ -35,6 +38,7 @@ export const routeIds = {
   category: createCrudIds("clip-one", "category"),
   supplier: createCrudIds("clip-one", "supplier"),
   dashboard: "dashboard",
+  productSettingsTab: "product-settings-tab",
 };
 
 const productRoutes = [
@@ -52,6 +56,17 @@ const productRoutes = [
         id: routeIds.product.detail,
         path: productDetailRoute,
         element: <ProductDetailRoute />,
+        children: [
+          {
+            index: true,
+            element: <ProductGeneralTab />,
+          },
+          {
+            id: routeIds.productSettingsTab,
+            path: productDetailSettingTabsRoute,
+            element: <ProductSettingsTab />,
+          },
+        ],
       },
     ],
   },
