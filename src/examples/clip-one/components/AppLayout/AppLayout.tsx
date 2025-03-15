@@ -4,7 +4,7 @@ import { Tabs } from "../Tabs/Tabs.tsx";
 
 import { TabbedNavigationMeta } from "src/lib/tabs";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { usePersistTabs } from "src/lib/tabs/persist.ts";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
@@ -68,6 +68,7 @@ export function AppLayout() {
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
     config,
     tabs,
+    endPinnedTabs: useMemo(() => [], []),
     onTabsChange: setTabs,
     startPinnedTabs,
     onCloseAllTabs: () => {

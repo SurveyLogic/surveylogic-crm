@@ -1,8 +1,8 @@
 import { Tabs } from "../components/Tabs/Tabs.tsx";
-import { TabbedNavigationMeta, TabModel } from "src/lib/tabs";
+import { TabbedNavigationMeta } from "src/lib/tabs";
 
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { routeIds } from "../routes.tsx";
 import { data as products } from "../data/products.json";
 
@@ -14,11 +14,13 @@ import {
   homeRoute,
   productDetailRoute,
   productDetailSettingTabsRoute,
+  productsCreateRoute,
   productsListRoute,
 } from "../constants/routes.constants.ts";
 import { useTabbedNavigation2 } from "src/lib/tabs/tabbed-navigation-2.tsx";
 import { css } from "@emotion/react";
 import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
+import { Button } from "src/examples/clip-one/components/Button/Button.tsx";
 
 type DetailParams = { id: string };
 
@@ -36,42 +38,50 @@ export function ProductsRoute() {
       storage: localStorageDriver,
     });
 
-  const defaultTabs: TabModel<TabbedNavigationMeta>[] = [
-    {
-      id: productsListRoute,
-      title: "List",
-      meta: {
-        routeId: routeIds.product.list,
-        path: productsListRoute,
-      },
+  const [listTab] = useState(() => ({
+    id: productsListRoute,
+    title: "All products",
+    meta: {
+      routeId: routeIds.product.list,
+      path: productsListRoute,
     },
-  ];
+  }));
+
+  const [detailTabDefinition] = useState(() => ({
+    title: ({ params }: { params: DetailParams }) => {
+      const product = products.find(
+        (product) => String(product.id) === params.id,
+      );
+      return product!.title;
+    },
+    id: ({ params }: { params: DetailParams }) =>
+      productDetailRoute.replace(":id", params.id),
+    routeId: routeIds.product.detail,
+  }));
+
+  const [listTabDefinition] = useState(() => ({
+    title: () => listTab.title,
+    id: listTab.id,
+    routeId: listTab.meta.routeId,
+  }));
+
+  const [createTabDefinition] = useState(() => ({
+    title: () => "New product",
+    id: productsCreateRoute,
+    routeId: routeIds.product.create,
+  }));
 
   const [tabs, setTabs] = useState(() =>
-    validateTabs(getTabsFromStorage() || defaultTabs, router.routes.slice()),
+    validateTabs(getTabsFromStorage() || [listTab], router.routes.slice()),
   );
 
-  const [startPinnedTabs, onStartPinnedTabsChange] = useState([
-    productsListRoute,
-  ]);
+  const [startPinnedTabs, setStartPinnedTabs] = useState([productsListRoute]);
+  const [endPinnedTabs, setEndPinnedTabs] = useState([productsCreateRoute]);
 
   const [config] = useState(() => [
-    {
-      title: () => "All products",
-      id: productsListRoute,
-      routeId: routeIds.product.list,
-    },
-    {
-      title: ({ params }: { params: DetailParams }) => {
-        const product = products.find(
-          (product) => String(product.id) === params.id,
-        );
-        return product!.title;
-      },
-      id: ({ params }: { params: DetailParams }) =>
-        productDetailRoute.replace(":id", params.id),
-      routeId: routeIds.product.detail,
-    },
+    listTabDefinition,
+    detailTabDefinition,
+    createTabDefinition,
   ]);
 
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
@@ -81,6 +91,7 @@ export function ProductsRoute() {
     }, [navigate]),
     startPinnedTabs,
     tabs,
+    endPinnedTabs: useMemo(() => [], []),
     onTabsChange: setTabs,
     resolveTabMeta: useCallback(() => ({}), []),
   });
@@ -94,8 +105,10 @@ export function ProductsRoute() {
       <Tabs
         tabs={tabs}
         onTabsChange={setTabs}
-        onStartPinnedTabsChange={onStartPinnedTabsChange}
+        onStartPinnedTabsChange={setStartPinnedTabs}
         startPinnedTabs={startPinnedTabs}
+        endPinnedTabs={endPinnedTabs}
+        onEndPinnedTabsChange={setEndPinnedTabs}
         initialActiveTabId={activeTabId}
         initialTabs={tabs}
         initialStartPinnedTabs={startPinnedTabs}
@@ -113,29 +126,40 @@ export function ProductsRoute() {
 export function ProductListRoute() {
   const navigate = useNavigate();
   return (
-    <div
-      css={css`
-        padding: 10px;
-      `}
-    >
-      <Table
-        onRowClick={(row) => {
-          navigate(productDetailRoute.replace(":id", String(row.id)));
+    <div>
+      <div>
+        <Button
+          onClick={() => {
+            navigate(productsCreateRoute);
+          }}
+        >
+          create new product
+        </Button>
+      </div>
+      <div
+        style={{
+          marginTop: 10,
         }}
-        columns={[
-          {
-            field: "id",
-            name: "ID",
-            width: 40,
-          },
-          {
-            field: "title",
-            name: "Title",
-            width: 150,
-          },
-        ]}
-        rows={products}
-      />
+      >
+        <Table
+          onRowClick={(row) => {
+            navigate(productDetailRoute.replace(":id", String(row.id)));
+          }}
+          columns={[
+            {
+              field: "id",
+              name: "ID",
+              width: 40,
+            },
+            {
+              field: "title",
+              name: "Title",
+              width: 150,
+            },
+          ]}
+          rows={products}
+        />
+      </div>
     </div>
   );
 }
@@ -167,7 +191,7 @@ export function ProductDetailRoute() {
     id: productDetailSettingTabsRoute.replace(":id", params.id),
     title: "Settings",
     meta: {
-      routeId: routeIds.productSettingsTab,
+      routeId: routeIds.product.tabs.settings,
       path: productDetailSettingTabsRoute.replace(":id", params.id),
     },
   }));
@@ -190,8 +214,9 @@ export function ProductDetailRoute() {
   const { activeTabId, setActiveTabId } = useTabbedNavigation2({
     config,
     onCloseAllTabs: useCallback(() => {}, []),
-    startPinnedTabs: [],
     tabs,
+    startPinnedTabs: useMemo(() => [], []),
+    endPinnedTabs: useMemo(() => [], []),
     onTabsChange: useCallback(() => {}, []),
     resolveTabMeta: useCallback(() => ({}), []),
   });
@@ -227,4 +252,8 @@ export function ProductGeneralTab() {
 
 export function ProductSettingsTab() {
   return <div>Settings</div>;
+}
+
+export function ProductCreateRoute() {
+  return <div>Create product</div>;
 }

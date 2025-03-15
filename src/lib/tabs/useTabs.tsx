@@ -26,11 +26,14 @@ export type TabsProps = {
   activeTabId?: string;
   initialActiveTabId?: string;
   startPinnedTabs?: string[];
+  endPinnedTabs?: string[];
   tabs?: TabModel<any>[];
   initialTabs?: TabModel<any>[];
   initialStartPinnedTabs?: string[];
+  initialEndPinnedTabs?: string[];
   onActiveTabIdChange?: (id: string | undefined) => void;
   onStartPinnedTabsChange?: (ids: string[]) => void;
+  onEndPinnedTabsChange?: (ids: string[]) => void;
   onTabsChange?: (tabs: TabModel<any>[]) => void;
   apiRef?: React.Ref<TabsApi | undefined>;
 };
@@ -39,6 +42,7 @@ export type State = {
   tabs: TabModel[];
   activeTabId: string | undefined;
   startPinnedTabs: string[];
+  endPinnedTabs: string[];
 };
 
 const useForceRerender = () => {
@@ -98,24 +102,29 @@ const useTabsState = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
     onTabsChange,
     onActiveTabIdChange,
     onStartPinnedTabsChange,
+    onEndPinnedTabsChange,
     initialTabs = [],
     initialActiveTabId,
     initialStartPinnedTabs = [],
+    initialEndPinnedTabs = [],
   } = props;
   const handlersMapRef = useRef<{
     tabs?: (tabs: TabModel[]) => void;
     activeTabId?: (id: string | undefined) => void;
     startPinnedTabs?: (ids: string[]) => void;
+    endPinnedTabs?: (ids: string[]) => void;
   }>({
     tabs: onTabsChange,
     activeTabId: onActiveTabIdChange,
     startPinnedTabs: onStartPinnedTabsChange,
+    endPinnedTabs: onEndPinnedTabsChange,
   });
 
   const stateRef = useRef<State>({
     tabs: initialTabs,
     activeTabId: initialActiveTabId,
     startPinnedTabs: initialStartPinnedTabs,
+    endPinnedTabs: initialEndPinnedTabs,
   });
 
   apiRef.current["getState"] = () => {
@@ -150,7 +159,10 @@ const useTabsState = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
 };
 
 const usePinning = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
-  const { startPinnedTabs: startPinnedTabsProp } = props;
+  const {
+    startPinnedTabs: startPinnedTabsProp,
+    endPinnedTabs: endPinnedTabsProp,
+  } = props;
   const setStartPinnedTabs = useCallback(
     (ids: string[], runHandlers = true) => {
       apiRef.current.setState(
@@ -164,11 +176,30 @@ const usePinning = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {
     [apiRef],
   );
 
+  const setEndPinnedTabs = useCallback(
+    (ids: string[], runHandlers = true) => {
+      apiRef.current.setState(
+        {
+          endPinnedTabs: ids,
+        },
+        runHandlers,
+      );
+      apiRef.current.forceUpdate();
+    },
+    [apiRef],
+  );
+
   useEffect(() => {
     if (startPinnedTabsProp) {
       setStartPinnedTabs(startPinnedTabsProp, false);
     }
   }, [startPinnedTabsProp, setStartPinnedTabs]);
+
+  useEffect(() => {
+    if (endPinnedTabsProp) {
+      setEndPinnedTabs(endPinnedTabsProp, false);
+    }
+  }, [endPinnedTabsProp, setEndPinnedTabs]);
 };
 
 const useTabModels = (apiRef: MutableRefObject<TabsApi>, props: TabsProps) => {

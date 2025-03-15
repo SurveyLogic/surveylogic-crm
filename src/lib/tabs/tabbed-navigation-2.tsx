@@ -44,6 +44,7 @@ export const useTabbedNavigation2 = <
   onTabsChange?: TabsChangeCallback<Meta>;
   tabs: TabModel<TabbedNavigationMeta & Meta>[];
   startPinnedTabs: string[];
+  endPinnedTabs: string[];
   onCloseAllTabs: () => void;
   resolveTabMeta: (match: AgnosticDataRouteMatch) => Meta;
 }) => {
@@ -53,6 +54,7 @@ export const useTabbedNavigation2 = <
     onTabsChange,
     tabs = [],
     startPinnedTabs,
+    endPinnedTabs,
     config,
   } = options;
 
@@ -116,6 +118,8 @@ export const useTabbedNavigation2 = <
               },
             });
           } else {
+            const prepend = true;
+
             const newTab: TabModel<TabbedNavigationMeta & Meta> = {
               id: typeof def.id === "function" ? def.id(match) : def.id,
               title: def.title(match),
@@ -127,12 +131,18 @@ export const useTabbedNavigation2 = <
             };
 
             // prepend a new tab
-            return insertAt(prevTabs, startPinnedTabs.length, newTab);
+            return prepend
+              ? insertAt(prevTabs, startPinnedTabs.length, newTab)
+              : insertAt(
+                  prevTabs,
+                  prevTabs.length - 1 - endPinnedTabs.length,
+                  newTab,
+                );
           }
         });
       });
     },
-    [resolveTabMeta, startPinnedTabs, config, onTabsChange],
+    [resolveTabMeta, startPinnedTabs, config, onTabsChange, endPinnedTabs],
   );
 
   useEffect(() => {

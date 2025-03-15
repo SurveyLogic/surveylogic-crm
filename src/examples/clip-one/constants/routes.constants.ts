@@ -4,6 +4,7 @@ export const homeRoute = `${basePath}/clip-one`;
 
 export const productsRoute = `${homeRoute}/products`;
 export const productsListRoute = `${homeRoute}/products/`;
+export const productsCreateRoute = `${homeRoute}/products/create`;
 export const productDetailRoute = `${homeRoute}/products/:id`;
 export const productDetailSettingTabsRoute = `${homeRoute}/products/:id/settings`;
 export const categoriesRoute = `${homeRoute}/categories`;
