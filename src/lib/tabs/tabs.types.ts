@@ -19,3 +19,8 @@ export type TabHandle = {
 export type Handle = {
   tabs: TabHandle[];
 };
+
+export type TabbedNavigationMeta = {
+  path: string;
+  routeId: string;
+};

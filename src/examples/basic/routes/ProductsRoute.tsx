@@ -1,13 +1,13 @@
-import { TabStoreKey } from "src/examples/basic/constants/tabs.constants.ts";
 import { Tabs } from "src/examples/basic/components/Tabs/Tabs.tsx";
 import {
+  convertRouteTreeToConfig,
+  replacePathParams,
   TabbedNavigationMeta,
   TabModel,
-  useTabbedNavigation,
 } from "src/lib/tabs";
 
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { routeIds } from "../routes.tsx";
 
 import { usePersistTabs } from "src/lib/tabs/persist.tsx";
@@ -19,6 +19,8 @@ import {
   productDetailRoute,
   productsListRoute,
 } from "src/examples/basic/constants/routes.constants.ts";
+import { TabStoreKey } from "src/examples/basic/constants/tabs.constants.ts";
+import { useDynamicRouterTabs } from "src/lib/tabs/useDynamicRouterTabs.tsx";
 
 const persistStoreKey = {
   name: "basic__product-tabs",
@@ -54,12 +56,17 @@ export function ProductsRoute() {
     productsListRoute,
   ]);
 
-  const { activeTabId, setActiveTabId } = useTabbedNavigation({
-    key: TabStoreKey.Products,
+  const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
+    config: useMemo(
+      () =>
+        convertRouteTreeToConfig(router.routes.slice(), TabStoreKey.Products),
+      [router],
+    ),
     onCloseAllTabs: useCallback(() => {
       navigate(homeRoute);
     }, [navigate]),
     startPinnedTabs,
+    endPinnedTabs: useMemo(() => [], []),
     tabs,
     onTabsChange: setTabs,
     resolveTabMeta: useCallback(() => ({}), []),
@@ -89,10 +96,22 @@ export function ProductListRoute() {
     <div>
       <ul>
         <li>
-          <Link to={productDetailRoute.replace(":id", "1")}>Product 1</Link>
+          <Link
+            to={replacePathParams(productDetailRoute, {
+              id: "1",
+            })}
+          >
+            Product 1
+          </Link>
         </li>
         <li>
-          <Link to={productDetailRoute.replace(":id", "2")}>Product 2</Link>
+          <Link
+            to={replacePathParams(productDetailRoute, {
+              id: "2",
+            })}
+          >
+            Product 2
+          </Link>
         </li>
       </ul>
     </div>

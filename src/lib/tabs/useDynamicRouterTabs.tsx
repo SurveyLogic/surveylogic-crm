@@ -42,7 +42,7 @@ type TabsChangeCallback<Meta extends ValidTabMeta = ValidTabMeta> = (
       },
 ) => void;
 
-export const useTabbedNavigation2 = <
+export const useDynamicRouterTabs = <
   Meta extends ValidTabMeta = ValidTabMeta,
   Params extends ValidParams = ValidParams,
 >(options: {

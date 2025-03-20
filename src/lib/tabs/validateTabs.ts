@@ -1,7 +1,5 @@
-import { TabModel } from "src/lib/tabs/tabs.types.ts";
 import { matchRoutes, RouteObject } from "react-router-dom";
-import { flattenRoutes } from "src/lib/tabs/tabs.utils.ts";
-import { TabbedNavigationMeta } from "src/lib/tabs/tabbed-navigation.tsx";
+import { TabbedNavigationMeta, TabModel, flattenRoutes } from "src/lib/tabs";
 
 export const validateTabs = <
   TabMeta extends TabbedNavigationMeta = TabbedNavigationMeta,

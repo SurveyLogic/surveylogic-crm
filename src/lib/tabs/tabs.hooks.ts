@@ -4,7 +4,9 @@ import {
   TabContextValue,
   TabsApiRefContext,
 } from "./tabs.components.tsx";
-import { ValidTabMeta } from "src/lib/tabs/tabs.types.ts";
+import { Handle, ValidTabMeta } from "src/lib/tabs/tabs.types.ts";
+import { UIMatch, useMatches } from "react-router-dom";
+import { getTabHandleUI } from "src/lib/tabs/tabbed-navigation.tsx";
 
 export const useTabContext = <Meta extends ValidTabMeta = ValidTabMeta>() => {
   return useContext<TabContextValue<Meta>>(TabContext);
@@ -12,4 +14,11 @@ export const useTabContext = <Meta extends ValidTabMeta = ValidTabMeta>() => {
 
 export const useTabsApiRefContext = () => {
   return useContext(TabsApiRefContext);
+};
+
+export const useActiveTabId = (key: string) => {
+  const matches = useMatches() as UIMatch<any, Handle>[];
+  const storeMatches = matches.filter(getTabHandleUI(key));
+
+  return storeMatches[storeMatches.length - 1]?.pathname;
 };

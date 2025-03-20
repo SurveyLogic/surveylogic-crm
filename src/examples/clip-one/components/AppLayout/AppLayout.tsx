@@ -1,14 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../Sidebar/Sidebar.tsx";
 import { Tabs } from "../Tabs/Tabs.tsx";
-
-import { TabbedNavigationMeta } from "src/lib/tabs";
-
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
-import { validateTabs } from "src/lib/tabs";
+
+import {
+  validateTabs,
+  usePersistTabs,
+  TabbedNavigationMeta,
+} from "src/lib/tabs";
+
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import {
   categoriesRoute,
@@ -19,8 +20,8 @@ import {
 } from "../../constants/routes.constants.ts";
 import {
   InsertMethod,
-  useTabbedNavigation2,
-} from "src/lib/tabs/tabbed-navigation-2.tsx";
+  useDynamicRouterTabs,
+} from "src/lib/tabs/useDynamicRouterTabs.tsx";
 import { routeIds } from "../../routes.tsx";
 import { css } from "@emotion/react";
 
@@ -72,7 +73,7 @@ export function AppLayout() {
     },
   ]);
 
-  const { activeTabId, setActiveTabId } = useTabbedNavigation2({
+  const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
     config,
     tabs,
     endPinnedTabs: useMemo(() => [], []),

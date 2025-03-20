@@ -19,8 +19,8 @@ import {
 } from "../constants/routes.constants.ts";
 import {
   InsertMethod,
-  useTabbedNavigation2,
-} from "src/lib/tabs/tabbed-navigation-2.tsx";
+  useDynamicRouterTabs,
+} from "src/lib/tabs/useDynamicRouterTabs.tsx";
 import { css } from "@emotion/react";
 import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
 import { Button } from "src/examples/clip-one/components/Button/Button.tsx";
@@ -92,7 +92,7 @@ export function ProductsRoute() {
     createTabDefinition,
   ]);
 
-  const { activeTabId, setActiveTabId } = useTabbedNavigation2({
+  const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
     config,
     onCloseAllTabs: useCallback(() => {
       navigate(homeRoute);
@@ -229,7 +229,7 @@ export function ProductDetailRoute() {
     [settingsTab, generalTab],
   );
 
-  const { activeTabId, setActiveTabId } = useTabbedNavigation2({
+  const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
     config,
     onCloseAllTabs: useCallback(() => {}, []),
     tabs,

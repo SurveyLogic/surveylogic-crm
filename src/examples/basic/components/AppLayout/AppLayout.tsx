@@ -5,18 +5,20 @@ import { Tabs } from "../../components/Tabs/Tabs.tsx";
 import { TabStoreKey } from "../../constants/tabs.constants.ts";
 import {
   TabbedNavigationMeta,
-  useTabbedNavigation,
   TabsApi,
+  convertRouteTreeToConfig,
+  validateTabs,
+  usePersistTabs,
 } from "src/lib/tabs";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
-import { validateTabs } from "src/lib/tabs";
+
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import { homeRoute } from "../../constants/routes.constants.ts";
 import { css } from "@emotion/react";
+import { useDynamicRouterTabs } from "src/lib/tabs/useDynamicRouterTabs.tsx";
 
 const persistStoreKey = {
   name: "basic__main-tabs",
@@ -40,11 +42,15 @@ export function AppLayout() {
 
   const [startPinnedTabs, setStartPinnedTabsChange] = useState<string[]>([]);
 
-  const { activeTabId, setActiveTabId } = useTabbedNavigation({
+  const { activeTabId, setActiveTabId } = useDynamicRouterTabs({
     tabs,
     onTabsChange: setTabs,
     startPinnedTabs,
-    key: TabStoreKey.Main,
+    endPinnedTabs: useMemo(() => [], []),
+    config: useMemo(
+      () => convertRouteTreeToConfig(router.routes.slice(), TabStoreKey.Main),
+      [router],
+    ),
     onCloseAllTabs: () => {
       navigate(homeRoute);
     },
