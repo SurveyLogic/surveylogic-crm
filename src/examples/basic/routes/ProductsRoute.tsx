@@ -10,7 +10,7 @@ import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { routeIds } from "../routes.tsx";
 
-import { usePersistTabs } from "src/lib/tabs/persist.ts";
+import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
@@ -38,6 +38,7 @@ export function ProductsRoute() {
     {
       id: productsListRoute,
       title: "List",
+      content: <Outlet />,
       meta: {
         routeId: routeIds.product.list,
         path: productsListRoute,
@@ -79,7 +80,6 @@ export function ProductsRoute() {
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
       />
-      <Outlet />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import {
 } from "src/lib/tabs/tabbed-navigation-2.tsx";
 
 import { TabModel } from "src/lib/tabs";
-import { usePersistTabs } from "src/lib/tabs/persist.ts";
+import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
@@ -54,6 +54,7 @@ export function CategoriesRoute() {
     {
       id: listTabDef.id,
       title: "List",
+      content: <Outlet />,
       meta: {
         routeId: listTabDef.id,
         path: "",
@@ -99,7 +100,6 @@ export function CategoriesRoute() {
         hasControlledActiveTabId
         onStartPinnedTabsChange={setStartPinnedTabsChange}
       />
-      <Outlet />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useDataRouterContext } from "../../hooks/useDataRouterContext.tsx";
-import { useMatches, useNavigate } from "react-router-dom";
+import { Outlet, useMatches, useNavigate } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 import { RouterState, AgnosticDataRouteMatch } from "@remix-run/router";
 import { last, replaceAt, insertAt } from "src/utils/array-utils.ts";
@@ -129,6 +129,7 @@ export const useTabbedNavigation2 = <
             const newTab: TabModel<TabbedNavigationMeta & Meta> = {
               id: typeof def.id === "function" ? def.id(match) : def.id,
               title: def.title(match),
+              content: <Outlet />,
               meta: {
                 path,
                 routeId: match.route.id,

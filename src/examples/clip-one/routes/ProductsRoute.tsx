@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { routeIds } from "../routes.tsx";
 import { data as products } from "../data/products.json";
 
-import { usePersistTabs } from "src/lib/tabs/persist.ts";
+import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
@@ -124,9 +124,6 @@ export function ProductsRoute() {
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
       />
-      <div css={tabContentStyles}>
-        <Outlet />
-      </div>
     </div>
   );
 }
@@ -178,12 +175,6 @@ const layoutStyles = css`
   height: 100%;
 `;
 
-const tabContentStyles = css`
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-`;
-
 export function ProductDetailRoute() {
   const params = useParams() as DetailParams;
 
@@ -191,6 +182,7 @@ export function ProductDetailRoute() {
     () => ({
       id: productDetailRoute.replace(":id", params.id),
       title: "General",
+      content: <Outlet />,
       isClosable: false,
       meta: {
         routeId: routeIds.product.detail,
@@ -203,6 +195,7 @@ export function ProductDetailRoute() {
     () => ({
       id: productDetailSettingTabsRoute.replace(":id", params.id),
       title: "Settings",
+      content: <Outlet />,
       isClosable: false,
       meta: {
         routeId: routeIds.product.tabs.settings,
@@ -257,9 +250,6 @@ export function ProductDetailRoute() {
         activeTabId={activeTabId}
         onActiveTabIdChange={setActiveTabId}
       />
-      <div css={tabContentStyles}>
-        <Outlet />
-      </div>
     </div>
   );
 }

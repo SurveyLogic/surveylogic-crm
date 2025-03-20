@@ -1,6 +1,7 @@
 import { useDataRouterContext } from "../../hooks/useDataRouterContext.tsx";
 import {
   DataRouteMatch,
+  Outlet,
   UIMatch,
   useMatches,
   useNavigate,
@@ -122,6 +123,7 @@ export const useTabbedNavigation = <
 
           return replaceAt(prevTabs, index, {
             ...tab,
+            content: <Outlet />,
             meta: {
               ...tab.meta,
               path,
@@ -133,6 +135,7 @@ export const useTabbedNavigation = <
             key: key,
             id: match.pathname,
             title,
+            content: <Outlet />,
             meta: {
               path,
               routeId: match.route.id,

@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/Sidebar/Sidebar.tsx";
 import { Tabs } from "../../components/Tabs/Tabs.tsx";
 
@@ -11,7 +11,7 @@ import {
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { usePersistTabs } from "src/lib/tabs/persist.ts";
+import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
 import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
@@ -70,7 +70,6 @@ export function AppLayout() {
           activeTabId={activeTabId}
           onActiveTabIdChange={setActiveTabId}
         />
-        <Outlet />
       </div>
     </div>
   );

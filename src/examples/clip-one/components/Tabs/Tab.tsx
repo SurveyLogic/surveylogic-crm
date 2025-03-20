@@ -2,30 +2,37 @@ import { TabModel } from "src/lib/tabs";
 import { noop } from "src/utils/noop.ts";
 import { MouseEventHandler } from "react";
 import { css } from "@emotion/react";
+import {
+  useTabContext,
+  useTabsApiRefContext,
+} from "src/lib/tabs/tabs.hooks.ts";
 
 export function Tab(props: {
-  tab: TabModel;
-  isPinned: boolean;
-  isClosable?: boolean;
-  isActive: boolean;
   onClose?: (tab: TabModel) => void;
   onActiveTabIdChange?: (id: string | undefined) => void;
 }) {
-  const {
-    tab,
-    isActive,
-    onClose = noop,
-    isClosable = true,
-    onActiveTabIdChange = noop,
-    isPinned,
-  } = props;
+  const { onClose = noop, onActiveTabIdChange = noop } = props;
+
+  const tab = useTabContext();
+  if (!tab) {
+    throw new Error("this is bug in Tab component, tab must be present");
+  }
+  const apiRef = useTabsApiRefContext();
+  if (!apiRef) {
+    throw new Error("this is bug in Tab component, api must be present");
+  }
+
+  const { activeTabId, startPinnedTabs } = apiRef.current.getState();
+
+  const isPinned = startPinnedTabs.includes(tab.id);
+  const isActive = tab.id === activeTabId;
+
+  const canBeClosed = !isPinned && (tab.isClosable ?? true);
 
   const handleClose: MouseEventHandler = (e) => {
     e.stopPropagation();
     onClose(tab);
   };
-
-  const canBeClosed = !isPinned && isClosable;
 
   return (
     <div
