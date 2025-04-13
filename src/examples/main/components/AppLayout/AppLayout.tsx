@@ -12,7 +12,6 @@ import {
 
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import {
-  categoriesRoute,
   dashboardRoute,
   homeRoute,
   ordersRoute,
@@ -51,12 +50,6 @@ export function AppLayout() {
       title: () => "Dashboard",
       id: dashboardRoute,
       routeId: routeIds.dashboard,
-      insertMethod: InsertMethod.Prepend,
-    },
-    {
-      title: () => "Categories",
-      id: categoriesRoute,
-      routeId: routeIds.category.layout,
       insertMethod: InsertMethod.Prepend,
     },
     {

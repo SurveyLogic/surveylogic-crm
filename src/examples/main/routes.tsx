@@ -7,17 +7,10 @@ import {
   OrderSettingsTab,
   OrdersRoute,
 } from "./routes/OrdersRoute.tsx";
-import {
-  CategoriesRoute,
-  CategoryDetailRoute,
-  CategoryListRoute,
-} from "./routes/CategoriesRoute.tsx";
 import { SuppliersRoute } from "./routes/SuppliersRoute.tsx";
 import { AppLayout } from "./components/AppLayout/AppLayout.tsx";
 import {
   homeRoute,
-  categoriesRoute,
-  categoryDetailRoute,
   orderDetailRoute,
   ordersRoute,
   suppliersRoute,
@@ -84,26 +77,6 @@ const orderRoutes = [
   },
 ];
 
-const categoryRoutes = [
-  {
-    path: categoriesRoute,
-    element: <CategoriesRoute />,
-    id: routeIds.category.layout,
-    children: [
-      {
-        id: routeIds.category.list,
-        index: true,
-        element: <CategoryListRoute />,
-      },
-      {
-        id: routeIds.category.detail,
-        path: categoryDetailRoute,
-        element: <CategoryDetailRoute />,
-      },
-    ],
-  },
-];
-
 const supplierRoutes = [
   {
     id: routeIds.supplier.layout,
@@ -129,7 +102,6 @@ export const mainRoutes = [
       },
       dashboard,
       ...orderRoutes,
-      ...categoryRoutes,
       ...supplierRoutes,
     ],
   },

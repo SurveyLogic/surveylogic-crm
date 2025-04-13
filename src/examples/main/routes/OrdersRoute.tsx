@@ -55,7 +55,7 @@ export function OrdersRoute() {
       const order = orders.find(
         (order) => String(order.id) === params.id,
       );
-      return order!.title;
+      return order!.companyName;
     },
     id: ({ params }: { params: DetailParams }) =>
       orderDetailRoute.replace(":id", params.id),
@@ -157,8 +157,8 @@ export function OrderListRoute() {
               width: 40,
             },
             {
-              field: "title",
-              name: "Title",
+              field: "companyName",
+              name: "CompanyName",
               width: 150,
             },
           ]}

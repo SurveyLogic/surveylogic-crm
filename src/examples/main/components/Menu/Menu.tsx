@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  categoriesRoute,
   dashboardRoute,
   ordersRoute,
   suppliersRoute,
@@ -15,9 +14,6 @@ export const Menu = () => {
       </Link>
       <Link css={linkStyles} to={ordersRoute}>
         Orders
-      </Link>
-      <Link css={linkStyles} to={categoriesRoute}>
-        Categories
       </Link>
       <Link css={linkStyles} to={suppliersRoute}>
         Suppliers
