@@ -269,6 +269,50 @@ export function OrderSettingsTab() {
   return <div>Settings</div>;
 }
 
+//add custom tabs
+export function OrderCompanyTab() {
+  return <div>Company</div>;
+}
+export function OrderItemsTab() {
+  return <div>Items</div>;
+}
+export function OrderTotalsTab() {
+  return <div>Totals</div>;
+}
+export function OrderPaymentsTab() {
+  return <div>Payments</div>;
+}
+export function OrderProductionTab() {
+  return <div>Production</div>;
+}
+export function OrderPartsTab() {
+  return <div>Production</div>;
+}
+export function OrderNotesTab() {
+  return <div>Notes</div>;
+}
+export function OrderActivitesTab() {
+  return <div>Activities</div>;
+}
+export function OrderArtworkTab() {
+  return <div>Artwork</div>;
+}
+export function OrderDocumentsTab() {
+  return <div>Documents</div>;
+}
+export function OrderShippingTab() {
+  return <div>Shipping</div>;
+}
+export function OrderUserDefinedFieldsTab() {
+  return <div>UserDefinedFields</div>;
+}
+export function OrderAdvancedTab() {
+  return <div>Advanced</div>;
+}
+
+
+
+
 export function OrderCreateRoute() {
   return <div>Create order</div>;
 }
