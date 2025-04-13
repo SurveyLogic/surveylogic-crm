@@ -11,7 +11,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: "/react-router-tabs/",
+  base: "/sl/",
   resolve: {
     alias: {
       src: "/src",

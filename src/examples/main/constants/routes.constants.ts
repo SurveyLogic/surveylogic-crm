@@ -1,6 +1,6 @@
 import { basePath } from "src/constants/routes.constants.ts";
 
-export const homeRoute = `${basePath}/clip-one`;
+export const homeRoute = `${basePath}/main`;
 
 export const productsRoute = `${homeRoute}/products`;
 export const productsListRoute = `${homeRoute}/products/`;

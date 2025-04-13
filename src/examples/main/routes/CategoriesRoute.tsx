@@ -22,12 +22,12 @@ import {
   categoryDetailRoute,
 } from "../constants/routes.constants.ts";
 import { css } from "@emotion/react";
-import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
+import { Table } from "src/examples/main/components/Table/Table.tsx";
 
 type DetailTabParams = { id: string };
 
 const persistStoreKey = {
-  name: "clip-one__category-tabs",
+  name: "main__category-tabs",
   version: "1.0",
 };
 

@@ -22,13 +22,13 @@ import {
   useDynamicRouterTabs,
 } from "src/lib/tabs/useDynamicRouterTabs.tsx";
 import { css } from "@emotion/react";
-import { Table } from "src/examples/clip-one/components/Table/Table.tsx";
-import { Button } from "src/examples/clip-one/components/Button/Button.tsx";
+import { Table } from "src/examples/main/components/Table/Table.tsx";
+import { Button } from "src/examples/main/components/Button/Button.tsx";
 
 type DetailParams = { id: string };
 
 const persistStoreKey = {
-  name: "clip-one__product-tabs",
+  name: "main__product-tabs",
   version: "1.0",
 };
 

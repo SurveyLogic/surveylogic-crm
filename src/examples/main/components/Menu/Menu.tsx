@@ -4,7 +4,7 @@ import {
   dashboardRoute,
   productsRoute,
   suppliersRoute,
-} from "src/examples/clip-one/constants/routes.constants.ts";
+} from "src/examples/main/constants/routes.constants.ts";
 import { css } from "@emotion/react";
 
 export const Menu = () => {

@@ -26,7 +26,7 @@ import { routeIds } from "../../routes.tsx";
 import { css } from "@emotion/react";
 
 const persistStoreKey = {
-  name: "clip-one__main-tabs",
+  name: "main__main-tabs",
   version: "1.0",
 };
 
