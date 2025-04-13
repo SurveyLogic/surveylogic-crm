@@ -170,8 +170,8 @@ export function OrderListRoute() {
           columns={[
             {
               field: "id",
-              name: "ID",
-              width: 40,
+              name: "Order Number",
+              width: 90,
             },
             {
               field: "companyName",
