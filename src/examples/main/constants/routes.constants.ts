@@ -2,11 +2,11 @@ import { basePath } from "src/constants/routes.constants.ts";
 
 export const homeRoute = `${basePath}/main`;
 
-export const productsRoute = `${homeRoute}/products`;
-export const productsListRoute = `${homeRoute}/products/`;
-export const productsCreateRoute = `${homeRoute}/products/create`;
-export const productDetailRoute = `${homeRoute}/products/:id`;
-export const productDetailSettingTabsRoute = `${homeRoute}/products/:id/settings`;
+export const ordersRoute = `${homeRoute}/orders`;
+export const ordersListRoute = `${homeRoute}/orders/`;
+export const ordersCreateRoute = `${homeRoute}/orders/create`;
+export const orderDetailRoute = `${homeRoute}/orders/:id`;
+export const orderDetailSettingTabsRoute = `${homeRoute}/orders/:id/settings`;
 export const categoriesRoute = `${homeRoute}/categories`;
 export const categoriesListRoute = `${homeRoute}/categories/`;
 export const categoryDetailRoute = `${homeRoute}/categories/:id`;

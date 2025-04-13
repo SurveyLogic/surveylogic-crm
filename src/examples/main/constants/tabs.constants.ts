@@ -1,5 +1,5 @@
 export enum TabStoreKey {
   Main = "main",
-  Products = "products",
+  Orders = "orders",
   Categories = "categories",
 }

@@ -15,7 +15,7 @@ import {
   categoriesRoute,
   dashboardRoute,
   homeRoute,
-  productsRoute,
+  ordersRoute,
   suppliersRoute,
 } from "../../constants/routes.constants.ts";
 import {
@@ -60,8 +60,8 @@ export function AppLayout() {
       insertMethod: InsertMethod.Prepend,
     },
     {
-      title: () => "Products",
-      id: productsRoute,
+      title: () => "Orders",
+      id: ordersRoute,
       routeId: routeIds.product.layout,
       insertMethod: InsertMethod.Prepend,
     },

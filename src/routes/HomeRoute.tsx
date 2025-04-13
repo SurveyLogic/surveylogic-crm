@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { homeRoute as basicHomeRoute } from "src/examples/basic/constants/routes.constants.ts";
 import { homeRoute as mainHomeRoute } from "src/examples/main/constants/routes.constants.ts";
 import { css } from "@emotion/react";
 
@@ -9,9 +8,6 @@ export function HomeRoute() {
       <div css={innerStyles}>
         <h1 css={titleStyles}>Examples:</h1>
         <ul>
-          <li>
-            <Link to={basicHomeRoute}>Basic</Link>
-          </li>
           <li>
             <Link to={mainHomeRoute}>Main</Link>
           </li>

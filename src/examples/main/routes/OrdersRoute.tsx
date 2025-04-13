@@ -4,7 +4,7 @@ import { TabbedNavigationMeta, TabModel } from "src/lib/tabs";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { routeIds } from "../routes.tsx";
-import { data as products } from "../data/products.json";
+import { data as orders } from "../data/orders.json";
 
 import { usePersistTabs } from "src/lib/tabs/persist.tsx";
 import { localStorageDriver } from "src/lib/storage/local-storage.ts";
@@ -12,10 +12,10 @@ import { validateTabs } from "src/lib/tabs";
 import { useDataRouterContext } from "src/hooks/useDataRouterContext.tsx";
 import {
   homeRoute,
-  productDetailRoute,
-  productDetailSettingTabsRoute,
-  productsCreateRoute,
-  productsListRoute,
+  orderDetailRoute,
+  orderDetailSettingTabsRoute,
+  ordersCreateRoute,
+  ordersListRoute,
 } from "../constants/routes.constants.ts";
 import {
   InsertMethod,
@@ -28,11 +28,11 @@ import { Button } from "src/examples/main/components/Button/Button.tsx";
 type DetailParams = { id: string };
 
 const persistStoreKey = {
-  name: "main__product-tabs",
+  name: "main__order-tabs",
   version: "1.0",
 };
 
-export function ProductsRoute() {
+export function OrdersRoute() {
   const navigate = useNavigate();
   const { router } = useDataRouterContext();
   const { getTabsFromStorage, persistTabs } =
@@ -42,23 +42,23 @@ export function ProductsRoute() {
     });
 
   const [listTab] = useState(() => ({
-    id: productsListRoute,
-    title: "All products",
+    id: ordersListRoute,
+    title: "All orders",
     meta: {
       routeId: routeIds.product.list,
-      path: productsListRoute,
+      path: ordersListRoute,
     },
   }));
 
   const [detailTabDefinition] = useState(() => ({
     title: ({ params }: { params: DetailParams }) => {
-      const product = products.find(
+      const product = orders.find(
         (product) => String(product.id) === params.id,
       );
       return product!.title;
     },
     id: ({ params }: { params: DetailParams }) =>
-      productDetailRoute.replace(":id", params.id),
+      orderDetailRoute.replace(":id", params.id),
     routeId: routeIds.product.detail,
     insertMethod: InsertMethod.Prepend,
   }));
@@ -71,8 +71,8 @@ export function ProductsRoute() {
   }));
 
   const [createTabDefinition] = useState(() => ({
-    title: () => "New product",
-    id: productsCreateRoute,
+    title: () => "New order",
+    id: ordersCreateRoute,
     routeId: routeIds.product.create,
     insertMethod: InsertMethod.Append,
   }));
@@ -82,7 +82,7 @@ export function ProductsRoute() {
   );
 
   const [startPinnedTabs, setStartPinnedTabs] = useState<string[]>([
-    productsListRoute,
+    ordersListRoute,
   ]);
   const [endPinnedTabs, setEndPinnedTabs] = useState<string[]>([]);
 
@@ -135,7 +135,7 @@ export function ProductListRoute() {
       <div>
         <Button
           onClick={() => {
-            navigate(productsCreateRoute);
+            navigate(ordersCreateRoute);
           }}
         >
           create new product
@@ -148,7 +148,7 @@ export function ProductListRoute() {
       >
         <Table
           onRowClick={(row) => {
-            navigate(productDetailRoute.replace(":id", String(row.id)));
+            navigate(orderDetailRoute.replace(":id", String(row.id)));
           }}
           columns={[
             {
@@ -162,7 +162,7 @@ export function ProductListRoute() {
               width: 150,
             },
           ]}
-          rows={products}
+          rows={orders}
         />
       </div>
     </div>
@@ -180,26 +180,26 @@ export function ProductDetailRoute() {
 
   const generalTab = useMemo<TabModel<TabbedNavigationMeta>>(
     () => ({
-      id: productDetailRoute.replace(":id", params.id),
+      id: orderDetailRoute.replace(":id", params.id),
       title: "General",
       content: <Outlet />,
       isClosable: false,
       meta: {
         routeId: routeIds.product.detail,
-        path: productDetailRoute.replace(":id", params.id),
+        path: orderDetailRoute.replace(":id", params.id),
       },
     }),
     [params.id],
   );
   const settingsTab = useMemo<TabModel<TabbedNavigationMeta>>(
     () => ({
-      id: productDetailSettingTabsRoute.replace(":id", params.id),
+      id: orderDetailSettingTabsRoute.replace(":id", params.id),
       title: "Settings",
       content: <Outlet />,
       isClosable: false,
       meta: {
         routeId: routeIds.product.tabs.settings,
-        path: productDetailSettingTabsRoute.replace(":id", params.id),
+        path: orderDetailSettingTabsRoute.replace(":id", params.id),
       },
     }),
     [params.id],
@@ -265,7 +265,7 @@ export function ProductGeneralTab() {
   return <div>General</div>;
 }
 
-export function ProductSettingsTab() {
+export function OrderSettingsTab() {
   return <div>Settings</div>;
 }
 
