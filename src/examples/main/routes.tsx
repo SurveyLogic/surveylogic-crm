@@ -1,9 +1,9 @@
 import { HomeRoute } from "./routes/HomeRoute.tsx";
 import {
-  ProductCreateRoute,
-  ProductDetailRoute,
-  ProductGeneralTab,
-  ProductListRoute,
+  OrderCreateRoute,
+  OrderDetailRoute,
+  OrderGeneralTab,
+  OrderListRoute,
   OrderSettingsTab,
   OrdersRoute,
 } from "./routes/OrdersRoute.tsx";
@@ -37,10 +37,10 @@ const createCrudIds = (example: string, domain: string) => {
 };
 
 export const routeIds = {
-  product: {
-    ...createCrudIds("main", "product"),
+  order: {
+    ...createCrudIds("main", "order"),
     tabs: {
-      settings: "product-settings-tab",
+      settings: "order-settings-tab",
     },
   },
   category: createCrudIds("main", "category"),
@@ -48,33 +48,33 @@ export const routeIds = {
   dashboard: "dashboard",
 };
 
-const productRoutes = [
+const orderRoutes = [
   {
-    id: routeIds.product.layout,
+    id: routeIds.order.layout,
     path: ordersRoute,
     element: <OrdersRoute />,
     children: [
       {
-        id: routeIds.product.list,
+        id: routeIds.order.list,
         index: true,
-        element: <ProductListRoute />,
+        element: <OrderListRoute />,
       },
       {
-        id: routeIds.product.create,
+        id: routeIds.order.create,
         path: ordersCreateRoute,
-        element: <ProductCreateRoute />,
+        element: <OrderCreateRoute />,
       },
       {
-        id: routeIds.product.detail,
+        id: routeIds.order.detail,
         path: orderDetailRoute,
-        element: <ProductDetailRoute />,
+        element: <OrderDetailRoute />,
         children: [
           {
             index: true,
-            element: <ProductGeneralTab />,
+            element: <OrderGeneralTab />,
           },
           {
-            id: routeIds.product.tabs.settings,
+            id: routeIds.order.tabs.settings,
             path: orderDetailSettingTabsRoute,
             element: <OrderSettingsTab />,
           },
@@ -128,7 +128,7 @@ export const mainRoutes = [
         element: <HomeRoute />,
       },
       dashboard,
-      ...productRoutes,
+      ...orderRoutes,
       ...categoryRoutes,
       ...supplierRoutes,
     ],

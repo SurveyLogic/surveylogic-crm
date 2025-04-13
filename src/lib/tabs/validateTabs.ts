@@ -16,7 +16,7 @@ export const validateTabs = <
       // filter out tabs that have wrong paths
       .filter((tab) => {
         // Tab could have a wrong path because we changed its corresponding route paths in the config
-        // For examples we changed /warehouse/product to /warehouse-management/product
+        // For examples we changed /warehouse/order to /warehouse-management/order
         const tabRoute = flattenedRoutes.find(
           (route) => route.id === tab.meta.routeId,
         );
